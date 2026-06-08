@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS/editor temporary files
+.DS_Store
+Thumbs.db
+*.tmp
+*.log
+*.cfg
+~$*
+~ai-*.tmp
+*.baiduyun.uploading.cfg
+
+# Local environments
+.venv/
+venv/
+env/
+anaconda_projects/
+
+# Large raw data and archives
+*.nc
+*.nc4
+*.h5
+*.hdf
+*.zip
+*.rar
+*.ai
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.png
+*.jpg
+*.jpeg
+*.pdf
+*.svg
+*.tif
+*.tiff
+*.gpkg
+*.geojson
+*.parquet
+*.feather
+*.dbf
+*.shp
+*.shx
+*.prj
+*.cpg
+*.sbn
+*.sbx
+*.xml
+*.db
+*.sqlite
+*.ipynb
+Data/
+makeUP/downloaded_stations_data/
+
+# Generated RC figure outputs
+code/RC_figure_csvs_1minus_beta/
+code/RC_final_figures_1minus_beta/
+code/RC_robustness*/
