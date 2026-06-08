@@ -65,6 +65,15 @@ The default station table is expected under `Data/`. To run climate-zone
 matching, provide the local Koppen climate shapefile with `--climate-shp` or
 place it at the default path used by `code/run_all_make_two_figures.py`.
 
+## Reproduction Case
+
+See `docs/CASE_RC_FIGURES.md` for a concrete new-environment case that lists
+the required local inputs, commands, expected outputs, and quick checks.
+
+For the upstream flood-event and R/C workflow, see
+`docs/CASE_FLOOD_RC_PIPELINE.md`. That case documents the handoff from
+`flood_events__*.nc` to `scaling_RC__*.nc`, then to outlet/basin R/C summaries.
+
 ## Git Policy
 
 Track source code, environment files, and documentation. Do not commit raw

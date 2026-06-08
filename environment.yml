@@ -8,6 +8,10 @@ dependencies:
   - matplotlib
   - scipy
   - openpyxl
+  - xarray
+  - netcdf4
+  - tqdm
+  - numba
   - geopandas
   - cartopy
   - pip

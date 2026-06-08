@@ -24,6 +24,7 @@ Thumbs.db
 venv/
 env/
 anaconda_projects/
+git.cmd
 
 # Large raw data and archives
 *.nc
