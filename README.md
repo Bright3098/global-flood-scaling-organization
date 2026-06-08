@@ -1,12 +1,14 @@
-# GPLW RC Figure Workspace
+# global-flood-scaling-organization
+
+Code and data-processing workflows for analysing scale-dependent runoff
+generation and flood organization using global streamflow observations and
+ISIMIP experiments.
 
 This repository is organized as a reproducible workspace for the GPLW runoff
-generation and confluence figure pipeline.
-
-The tracked project core is the Python code under `code/`, the environment
-definition, and documentation. Large raw data, generated figures, notebooks,
-GIS layers, archives, and temporary files are intentionally kept out of Git by
-the root `.gitignore`.
+generation and confluence figure pipeline. The tracked project core is the
+Python code under `code/`, the environment definition, and documentation. Large
+raw data, generated figures, notebooks, GIS layers, archives, and temporary
+files are intentionally kept out of Git by the root `.gitignore`.
 
 ## Project Layout
 
@@ -16,34 +18,30 @@ the root `.gitignore`.
 - `code/01_export_csvs_for_two_figures.py`: converts station data into
   figure-ready CSV tables.
 - `code/02_plot_two_figures.py`: renders the final figures from exported CSVs.
+- `code/compute_event_rc_from_flood_events.py`: computes event-level `R` and
+  `C` from `flood_events__*.nc` files.
+- `docs/`: environment notes and reproduction cases.
 - `Data/`: local input data folder, ignored by Git.
-- `code/RC_figure_csvs_1minus_beta/`: generated intermediate CSVs, ignored.
-- `code/RC_final_figures_1minus_beta/`: generated PNG/PDF/SVG figures, ignored.
+- `code/RC_figure_csvs_1minus_beta/`: generated intermediate CSVs, ignored by
+  Git.
+- `code/RC_final_figures_1minus_beta/`: generated PNG/PDF/SVG figures, ignored
+  by Git.
 - Other top-level folders are legacy analysis outputs or local data products;
-  keep them local unless they are explicitly curated into the source workflow.
+  keep them local unless they are explicitly curated for publication.
 
 ## Recreate The Environment
 
-Conda is recommended because optional map and GIS dependencies are easier to
-install from conda-forge.
+Create a new conda environment from the project root:
 
 ```powershell
 conda env create -f environment.yml
 conda activate gplw-rc
 ```
 
-If you prefer pip:
+If you prefer pip, install the packages listed in `environment.yml` into a clean
+Python environment. See `docs/ENVIRONMENT.md` for additional setup notes.
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r code\requirements.txt
-```
-
-`geopandas` is optional for climate-zone matching and `cartopy` is optional for
-map rendering. Install both when reproducing the full publication figures.
-
-## Run The Pipeline
+## Run The RC Figure Pipeline
 
 From the project root:
 
@@ -52,31 +50,42 @@ cd code
 python run_all_make_two_figures.py
 ```
 
-Useful variants:
+Optional variants:
 
 ```powershell
-python run_all_make_two_figures.py --no-climate
-python run_all_make_two_figures.py --skip-export
-python run_all_make_two_figures.py --main-csv ..\Data\filtered_station_summary_.xlsx
-python run_all_make_two_figures.py --csv-dir .\RC_figure_csvs_1minus_beta --fig-dir .\RC_final_figures_1minus_beta
+python run_all_make_two_figures.py --no-show
+python run_all_make_two_figures.py --export-script 01_export_csvs_for_two_figures.py --plot-script 02_plot_two_figures.py
 ```
 
-The default station table is expected under `Data/`. To run climate-zone
-matching, provide the local Koppen climate shapefile with `--climate-shp` or
-place it at the default path used by `code/run_all_make_two_figures.py`.
+Default local paths used by the figure scripts:
 
-## Reproduction Case
+- Data root: `../Data`
+- CMIP6 station table: `../Data/csv_from_o3_processed/df_results_modified_split.csv`
+- GRDC station table: `../Data/GRDC_processed/df_results_modified_split.csv`
+- Output CSV folder: `RC_figure_csvs_1minus_beta`
+- Output figure folder: `RC_final_figures_1minus_beta`
 
-See `docs/CASE_RC_FIGURES.md` for a concrete new-environment case that lists
-the required local inputs, commands, expected outputs, and quick checks.
+Outputs:
 
-For the upstream flood-event and R/C workflow, see
-`docs/CASE_FLOOD_RC_PIPELINE.md`. That case documents the handoff from
-`flood_events__*.nc` to `scaling_RC__*.nc`, then to outlet/basin R/C summaries.
+- `code/RC_figure_csvs_1minus_beta/figure1_data.csv`
+- `code/RC_figure_csvs_1minus_beta/figure2_data.csv`
+- `code/RC_final_figures_1minus_beta/figure1_comprehensive.png`
+- `code/RC_final_figures_1minus_beta/figure2_comprehensive.{png,pdf,svg}`
+
+## Reproduction Cases
+
+For the two-figure RC reproduction workflow, see:
+
+- `docs/CASE_RC_FIGURES.md`
+
+For the upstream flood-event extraction and event-level `R`/`C` computation
+workflow, see:
+
+- `docs/CASE_FLOOD_RC_PIPELINE.md`
+- `code/compute_event_rc_from_flood_events.py`
 
 ## Git Policy
 
-Track source code, environment files, and documentation. Do not commit raw
-data, generated figures, GIS files, notebooks, large archives, or temporary
-sync files. If a result must be published, export it separately or add a small
-curated artifact with a clear note in the commit message.
+The repository tracks code, documentation, and small environment files. It does
+not track large input data, generated figures, notebooks, archives, temporary
+files, or local helper shims such as `git.cmd`.

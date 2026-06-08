@@ -1,0 +1,446 @@
+from pathlib import Path
+import pandas as pd
+import numpy as np
+import xarray as xr
+from datetime import datetime
+
+try:
+    from IPython.display import display
+except Exception:
+
+
+ROOT_DIR = Path(r"D:\workroom\GPLW_furture\ISIMIP")  
+OUT_DIR = ROOT_DIR / "_scaling_RC_file_index"
+OUT_DIR.mkdir(parents=True, exist_ok=True)
+
+OPEN_SAMPLE_NC = True
+SAVE_EXCEL = True
+
+print("=" * 90)
+print("ROOT_DIR:", ROOT_DIR)
+print("ROOT_DIR exists:", ROOT_DIR.exists())
+print("OUT_DIR:", OUT_DIR)
+print("=" * 90)
+
+
+# ============================================================
+
+def normalize_name(x):
+
+    if pd.isna(x):
+        return None
+    return str(x).strip().lower()
+
+
+def detect_round_from_path(path):
+
+
+    parts = [p.lower() for p in Path(path).parts]
+    joined = "/".join(parts)
+    
+    if "isimip3a" in joined or "3a" in parts:
+        return "ISIMIP3a"
+    if "isimip3b" in joined or "3b" in parts:
+        return "ISIMIP3b"
+
+    if "obsclim" in joined or "counterclim" in joined or "nowatermgt" in joined or "1901irr" in joined:
+        return "ISIMIP3a"
+    if "ssp126" in joined or "ssp370" in joined or "ssp585" in joined or "historical" in joined:
+        return "ISIMIP3b"
+    
+    return "unknown"
+
+
+def parse_scaling_rc_file(path):
+
+    path = Path(path)
+    filename = path.name
+    stem = filename.replace(".nc", "")
+    rel = None
+    
+    rec = {
+        "filename": filename,
+        "stem": stem,
+        "local_path": str(path),
+        "relative_path": None,
+        "parse_status": "ok",
+        
+        "isimip_round": detect_round_from_path(path),
+        "data_type": "scaling_RC",
+        
+        "ghm": None,
+        "forcing_or_gcm": None,
+        "forcing": None,
+        "gcm": None,
+        "scenario": None,
+        "soc": None,
+        "variant": None,
+        
+        "folder_0": None,
+        "folder_1": None,
+        "folder_2": None,
+        "folder_3": None,
+        "folder_4": None,
+        
+        "file_size_mb": np.nan,
+        "modified_time": pd.NaT,
+    }
+    
+    try:
+        rec["relative_path"] = str(path.relative_to(ROOT_DIR))
+    except Exception:
+        rec["relative_path"] = str(path)
+
+    try:
+        stat = path.stat()
+        rec["file_size_mb"] = stat.st_size / 1024 / 1024
+        rec["modified_time"] = datetime.fromtimestamp(stat.st_mtime)
+    except Exception:
+        pass
+    
+
+    rel_parts = Path(rec["relative_path"]).parts
+    for i in range(min(5, len(rel_parts))):
+        rec[f"folder_{i}"] = rel_parts[i]
+    
+    # scaling_RC__cwatm__20crv3__histsoc__default
+    if stem.startswith("scaling_RC__"):
+        body = stem.replace("scaling_RC__", "")
+        parts = body.split("__")
+        
+        if len(parts) >= 4:
+            rec["ghm"] = normalize_name(parts[0])
+            rec["forcing_or_gcm"] = normalize_name(parts[1])
+            rec["soc"] = normalize_name(parts[2])
+            rec["variant"] = normalize_name(parts[3])
+        else:
+            rec["parse_status"] = "failed_scaling_rc_filename_parts"
+    else:
+        rec["parse_status"] = "not_scaling_RC_file"
+
+    pparts = [normalize_name(p) for p in path.parts]
+    
+  
+    rel_parts_low = [normalize_name(p) for p in rel_parts]
+    
+
+    round_pos = None
+    for i, p in enumerate(rel_parts_low):
+        if p in ["3a", "isimip3a", "3b", "isimip3b"]:
+            round_pos = i
+            break
+    
+    if round_pos is not None:
+        after = rel_parts_low[round_pos + 1:]
+        
+        if rec["isimip_round"] == "ISIMIP3a":
+            # after: ghm / soc / variant / forcing / file
+            if len(after) >= 4:
+                rec["ghm"] = rec["ghm"] or after[0]
+                rec["soc"] = rec["soc"] or after[1]
+                rec["variant"] = rec["variant"] or after[2]
+                rec["forcing"] = after[3]
+                rec["forcing_or_gcm"] = rec["forcing_or_gcm"] or after[3]
+                rec["scenario"] = "historical"
+        
+        elif rec["isimip_round"] == "ISIMIP3b":
+
+            
+            if len(after) >= 5:
+                rec["ghm"] = rec["ghm"] or after[0]
+                
+                # 查找 scenario
+                scenario_candidates = ["historical", "ssp126", "ssp370", "ssp585"]
+                scenario_pos = None
+                for j, item in enumerate(after):
+                    if item in scenario_candidates:
+                        scenario_pos = j
+                        break
+                
+                if scenario_pos is not None:
+                    rec["scenario"] = after[scenario_pos]
+                    
+                    # scenario 前面最可能是 gcm
+                    if scenario_pos - 1 >= 1:
+                        rec["gcm"] = after[scenario_pos - 1]
+                        rec["forcing_or_gcm"] = rec["forcing_or_gcm"] or after[scenario_pos - 1]
+                    
+                    # scenario 后面可能是 soc / variant
+                    if scenario_pos + 1 < len(after):
+                        rec["soc"] = rec["soc"] or after[scenario_pos + 1]
+                    if scenario_pos + 2 < len(after):
+                        # 最后一项是 filename，不要当 variant
+                        if not after[scenario_pos + 2].endswith(".nc"):
+                            rec["variant"] = rec["variant"] or after[scenario_pos + 2]
+    
+    # -------- 3) 根据 ISIMIP round 决定 forcing/gcm 字段 --------
+    if rec["isimip_round"] == "ISIMIP3a":
+        rec["forcing"] = rec["forcing"] or rec["forcing_or_gcm"]
+        rec["gcm"] = None
+        rec["scenario"] = rec["scenario"] or "historical"
+    
+    elif rec["isimip_round"] == "ISIMIP3b":
+        rec["gcm"] = rec["gcm"] or rec["forcing_or_gcm"]
+        rec["forcing"] = None
+    
+    return rec
+
+
+
+print("\n" + "=" * 90)
+print("1. Scanning scaling_RC .nc files")
+print("=" * 90)
+
+all_nc_files = sorted(ROOT_DIR.rglob("*.nc"))
+scaling_files = [f for f in all_nc_files if f.name.startswith("scaling_RC__")]
+
+print("All .nc files found:", len(all_nc_files))
+print("scaling_RC files found:", len(scaling_files))
+
+records = []
+for f in scaling_files:
+    records.append(parse_scaling_rc_file(f))
+
+index_df = pd.DataFrame(records)
+
+print("\nParsed records:", len(index_df))
+print("\nParse status:")
+display(index_df["parse_status"].value_counts(dropna=False))
+
+print("\nISIMIP round:")
+display(index_df["isimip_round"].value_counts(dropna=False))
+
+print("\nFirst 10 records:")
+display(index_df.head(10))
+
+
+
+
+print("\n" + "=" * 90)
+print("2. Creating experiment summary")
+print("=" * 90)
+
+group_cols = [
+    "isimip_round",
+    "ghm",
+    "gcm",
+    "forcing",
+    "scenario",
+    "soc",
+    "variant"
+]
+
+summary_df = (
+    index_df
+    .groupby(group_cols, dropna=False)
+    .agg(
+        n_files=("filename", "count"),
+        total_size_mb=("file_size_mb", "sum"),
+        example_file=("filename", "first"),
+        example_path=("local_path", "first")
+    )
+    .reset_index()
+    .sort_values(["isimip_round", "ghm", "gcm", "forcing", "scenario", "soc", "variant"])
+)
+
+print("Number of experiment combinations:", len(summary_df))
+display(summary_df.head(100))
+
+
+index_3a = index_df[index_df["isimip_round"] == "ISIMIP3a"].copy()
+index_3b = index_df[index_df["isimip_round"] == "ISIMIP3b"].copy()
+
+summary_3a = summary_df[summary_df["isimip_round"] == "ISIMIP3a"].copy()
+summary_3b = summary_df[summary_df["isimip_round"] == "ISIMIP3b"].copy()
+
+print("\n" + "=" * 90)
+print("3. ISIMIP3a summary")
+print("=" * 90)
+print("3A files:", len(index_3a))
+if len(index_3a) > 0:
+    print("\n3A GHMs:")
+    display(index_3a["ghm"].value_counts(dropna=False))
+    print("\n3A forcings:")
+    display(index_3a["forcing"].value_counts(dropna=False))
+    print("\n3A variants:")
+    display(index_3a["variant"].value_counts(dropna=False))
+    display(summary_3a.head(100))
+
+print("\n" + "=" * 90)
+print("4. ISIMIP3b summary")
+print("=" * 90)
+print("3B files:", len(index_3b))
+if len(index_3b) > 0:
+    print("\n3B GHMs:")
+    display(index_3b["ghm"].value_counts(dropna=False))
+    print("\n3B GCMs:")
+    display(index_3b["gcm"].value_counts(dropna=False))
+    print("\n3B scenarios:")
+    display(index_3b["scenario"].value_counts(dropna=False))
+    print("\n3B variants:")
+    display(index_3b["variant"].value_counts(dropna=False))
+    display(summary_3b.head(100))
+
+
+
+print("\n" + "=" * 90)
+print("5. Inspecting variables in nc files")
+print("=" * 90)
+
+var_records = []
+
+for i, row in index_df.iterrows():
+    path = row["local_path"]
+    
+    try:
+        ds = xr.open_dataset(path, decode_times=False)
+        data_vars = list(ds.data_vars)
+        coords = list(ds.coords)
+        dims = dict(ds.dims)
+        ds.close()
+        
+        var_records.append({
+            "filename": row["filename"],
+            "local_path": path,
+            "isimip_round": row["isimip_round"],
+            "ghm": row["ghm"],
+            "gcm": row["gcm"],
+            "forcing": row["forcing"],
+            "scenario": row["scenario"],
+            "soc": row["soc"],
+            "variant": row["variant"],
+            "data_vars": ";".join(data_vars),
+            "coords": ";".join(coords),
+            "dims": str(dims),
+            "open_status": "ok"
+        })
+        
+    except Exception as e:
+        var_records.append({
+            "filename": row["filename"],
+            "local_path": path,
+            "isimip_round": row["isimip_round"],
+            "ghm": row["ghm"],
+            "gcm": row["gcm"],
+            "forcing": row["forcing"],
+            "scenario": row["scenario"],
+            "soc": row["soc"],
+            "variant": row["variant"],
+            "data_vars": None,
+            "coords": None,
+            "dims": None,
+            "open_status": f"failed: {e}"
+        })
+
+vars_df = pd.DataFrame(var_records)
+
+print("Open status:")
+display(vars_df["open_status"].value_counts(dropna=False).head(20))
+
+print("\nVariable combinations:")
+display(vars_df["data_vars"].value_counts(dropna=False).head(20))
+
+display(vars_df.head(20))
+
+print("\n" + "=" * 90)
+print("6. Creating analysis-ready tables")
+print("=" * 90)
+
+# 3B warming-level 候选：historical + SSPs
+warming_candidates = index_3b[
+    index_3b["scenario"].isin(["historical", "ssp126", "ssp370", "ssp585"])
+].copy()
+
+
+human_candidates = index_3a[
+    index_3a["variant"].isin(["default", "nowatermgt", "1901irr"])
+].copy()
+
+print("Warming candidates:", len(warming_candidates))
+if len(warming_candidates) > 0:
+    display(
+        warming_candidates[
+            ["ghm", "gcm", "scenario", "soc", "variant", "filename", "local_path"]
+        ].head(30)
+    )
+
+print("Human-activity candidates:", len(human_candidates))
+if len(human_candidates) > 0:
+    display(
+        human_candidates[
+            ["ghm", "forcing", "scenario", "soc", "variant", "filename", "local_path"]
+        ].head(30)
+    )
+
+
+# ============================================================
+# 7. 保存所有索引表
+# ============================================================
+
+print("\n" + "=" * 90)
+print("7. Saving outputs")
+print("=" * 90)
+
+out_index = OUT_DIR / "scaling_RC_all_file_index.csv"
+out_summary = OUT_DIR / "scaling_RC_experiment_summary.csv"
+out_vars = OUT_DIR / "scaling_RC_nc_variables.csv"
+out_3a = OUT_DIR / "scaling_RC_ISIMIP3a_index.csv"
+out_3b = OUT_DIR / "scaling_RC_ISIMIP3b_index.csv"
+out_warming = OUT_DIR / "scaling_RC_warming_candidates.csv"
+out_human = OUT_DIR / "scaling_RC_human_activity_candidates.csv"
+
+index_df.to_csv(out_index, index=False, encoding="utf-8-sig")
+summary_df.to_csv(out_summary, index=False, encoding="utf-8-sig")
+vars_df.to_csv(out_vars, index=False, encoding="utf-8-sig")
+index_3a.to_csv(out_3a, index=False, encoding="utf-8-sig")
+index_3b.to_csv(out_3b, index=False, encoding="utf-8-sig")
+warming_candidates.to_csv(out_warming, index=False, encoding="utf-8-sig")
+human_candidates.to_csv(out_human, index=False, encoding="utf-8-sig")
+
+print("Saved:")
+print(out_index)
+print(out_summary)
+print(out_vars)
+print(out_3a)
+print(out_3b)
+print(out_warming)
+print(out_human)
+
+if SAVE_EXCEL:
+    out_excel = OUT_DIR / "scaling_RC_file_index_summary.xlsx"
+    
+    with pd.ExcelWriter(out_excel, engine="openpyxl") as writer:
+        index_df.to_excel(writer, sheet_name="all_index", index=False)
+        summary_df.to_excel(writer, sheet_name="experiment_summary", index=False)
+        vars_df.to_excel(writer, sheet_name="nc_variables", index=False)
+        index_3a.to_excel(writer, sheet_name="ISIMIP3a", index=False)
+        index_3b.to_excel(writer, sheet_name="ISIMIP3b", index=False)
+        warming_candidates.to_excel(writer, sheet_name="warming_candidates", index=False)
+        human_candidates.to_excel(writer, sheet_name="human_candidates", index=False)
+    
+    print("Saved Excel:")
+    print(out_excel)
+
+
+print("\n" + "=" * 90)
+print("8. Opening one sample nc")
+print("=" * 90)
+
+if OPEN_SAMPLE_NC and len(index_df) > 0:
+    sample_path = Path(index_df.iloc[0]["local_path"])
+    print("Sample file:")
+    print(sample_path)
+      
+    try:
+        ds = xr.open_dataset(sample_path, decode_times=False)
+        print(ds)
+        print("\nData variables:", list(ds.data_vars))
+        print("Coordinates:", list(ds.coords))
+        print("Dimensions:", dict(ds.dims))
+        ds.close()
+    except Exception as e:
+        print("Failed to open sample nc:")
+        print(e)
+
+print("\nDone.")
+print("Output folder:", OUT_DIR)
