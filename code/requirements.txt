@@ -1,11 +1,5 @@
 numpy
 pandas
-matplotlib
 scipy
+netCDF4
 openpyxl
-
-# Optional: needed for climate-zone spatial matching.
-geopandas
-
-# Optional: needed for map rendering in 02_plot_two_figures.py.
-cartopy

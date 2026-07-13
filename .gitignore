@@ -62,6 +62,12 @@ git.cmd
 *.ipynb
 Data/
 makeUP/downloaded_stations_data/
+outputs/
+_organized/
+气候区划/
+organize_gplw.ps1
+Result3
+result_1_2
 
 # Generated RC figure outputs
 code/RC_figure_csvs_1minus_beta/

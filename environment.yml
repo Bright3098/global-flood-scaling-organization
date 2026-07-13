@@ -1,17 +1,11 @@
-name: gplw-rc
+name: gplw-core
 channels:
   - conda-forge
 dependencies:
   - python=3.11
   - numpy
   - pandas
-  - matplotlib
   - scipy
-  - openpyxl
-  - xarray
   - netcdf4
-  - tqdm
-  - numba
-  - geopandas
-  - cartopy
+  - openpyxl
   - pip
