@@ -59,6 +59,17 @@ The case data are small subsets copied or converted from the local GPLW
 workspace. They are included only to demonstrate file formats and command usage;
 they are not the full research datasets.
 
+Expected demo outputs are written to `outputs/case_data_run/`:
+
+- `01_flood_events_csv/ALL_flood_events_summary.csv`
+- `01_flood_events_csv/ALL_flood_events_timeseries.csv`
+- `02_event_rc/scaling_RC__barcoo_blackall_case.nc`
+- `03_qpeak_trends/qpeak_trend_summary.csv`
+- `04_otsu_like_threshold/otsu_like_threshold_summary.csv`
+
+On a normal desktop or laptop, the included case-data demo should finish in
+under one minute.
+
 ## Individual Commands
 
 Flood extraction:
@@ -84,3 +95,9 @@ Otsu-like threshold:
 ```powershell
 python code/04_otsu_like_method/otsu_like_area_threshold.py --input Data/station_area_trend_table.csv --out-dir outputs/otsu_like_threshold --area-col area_km2 --trend-col trend_direction
 ```
+
+## Submission Checklist
+
+For a Nature Research-style code/software submission checklist, see:
+
+- `docs/NATURE_CODE_CHECKLIST.md`
