@@ -23,6 +23,8 @@ outputs are intentionally excluded from GitHub.
   Finds an Otsu-like area threshold that maximizes trend-direction separation.
 - `examples/example_four_methods.py`
   Example command file showing how to run the four workflows.
+- `examples/case_data/`
+  Small real-data subsets for runnable examples.
 
 ## Environment
 
@@ -41,17 +43,21 @@ pip install -r code/requirements.txt
 
 ## Example
 
-Print the example commands:
+Print the example commands for the included real case data:
 
 ```powershell
 python examples/example_four_methods.py
 ```
 
-After editing the input paths in `examples/example_four_methods.py`, run:
+Run the included case data:
 
 ```powershell
 python examples/example_four_methods.py --execute
 ```
+
+The case data are small subsets copied or converted from the local GPLW
+workspace. They are included only to demonstrate file formats and command usage;
+they are not the full research datasets.
 
 ## Individual Commands
 

@@ -1,0 +1,121 @@
+station_name,river_name,area,Slope_Trend_MK,Intercept_Trend_MK,annual_precip_mm,precip_zone_3_200_400_800
+HENDAL BRIDGE,ERIDGE STREAM,53.70000076,Decreasing,Increasing*,794.0,sub_humid_400_800
+"NASIJARVI, TAMMERKOSKI",KOKEMAENJOKI,7672.0,Increasing*,Increasing,612.0,sub_humid_400_800
+"NEAR MONROE, MICH.",RIVER RAISIN,2698.800049,Increasing,Increasing,857.0,humid_gt800
+NEAR BRACKENDALE,SQUAMISH RIVER,2330.0,Increasing,Increasing,1893.0,humid_gt800
+"UNADILLA, NY",SUSQUEHANNA RIVER,2543.399902,Increasing,Decreasing,1087.0,humid_gt800
+KLEIN BENGERSTORF,SCHAALE,608.0,Decreasing,Decreasing,664.0,sub_humid_400_800
+MANNDALEN BRU,MANNDALSELVA,200.4799957,Increasing,Decreasing,591.0,sub_humid_400_800
+CALGARY,BOW RIVER,7860.0,Increasing,Decreasing,427.0,sub_humid_400_800
+DRAWINY,DRAWA,3281.060059,Increasing,Decreasing,561.0,sub_humid_400_800
+"CASTLE ROCK, WA",COWLITZ RIVER,5796.399902,Increasing,Decreasing*,1475.0,humid_gt800
+"NEAR LILY, CO",LITTLE SNAKE RIVER,9660.700195,Increasing,Decreasing,293.0,dry_arid_semiarid_lt400
+NEAR UPPER MARGAREE,MARGAREE RIVER,357.0,Increasing,Increasing,1441.0,humid_gt800
+TEISNACH,SCHWARZER REGEN,627.0999756,Decreasing,Increasing*,1104.0,humid_gt800
+"SCOTIA, CALIF.",EEL RIVER,8062.700195,Increasing,Decreasing*,1721.0,humid_gt800
+"NEAR BERNARDO, NM",RIO PUERCO,19036.5,Increasing*,Decreasing*,228.0,dry_arid_semiarid_lt400
+VAKKOLA,PORVOONJOKI,1128.0,Decreasing*,Decreasing,670.0,sub_humid_400_800
+NEAR MARWAYNE,VERMILION RIVER,7270.0,Increasing,Decreasing,396.0,dry_arid_semiarid_lt400
+MUKWE (64932102),OKAVANGO RIVER,206000.0,Increasing,Decreasing,556.0,sub_humid_400_800
+BARRHEAD,PADDLE RIVER,2380.0,Increasing,Decreasing,493.0,sub_humid_400_800
+"STANLEY, ID",VALLEY CREEK,380.730011,Decreasing*,Increasing,443.0,sub_humid_400_800
+JUNKERDALSELV,SALTELVA,422.0,Increasing,Increasing,696.0,sub_humid_400_800
+BOOS,NAHE,2832.0,Increasing,Decreasing,582.0,sub_humid_400_800
+NESMER,OSLAVA,478.8280029,Decreasing,Increasing,547.0,sub_humid_400_800
+HOGFOSS,HOBOLELVA,297.0,Decreasing,Increasing*,792.0,sub_humid_400_800
+NEUBERG AN DER MUERZ,MURZ,229.3999939,Decreasing,Increasing,1101.0,humid_gt800
+"RICHMOND, TEX.",BRAZOS RIVER,116827.1016,Increasing,Decreasing,1116.0,humid_gt800
+ABOVE CANYON CREEK,PEEL RIVER,25700.0,Increasing,Decreasing,336.0,dry_arid_semiarid_lt400
+NEAR HARDISTY,IRON CREEK,3500.0,Increasing*,Decreasing*,409.0,sub_humid_400_800
+TEPLICE,BECVA,1275.319946,Increasing,Increasing,691.0,sub_humid_400_800
+FRIDINGEN,BARA,134.0,Increasing,Decreasing,866.0,humid_gt800
+SILJAN,OSTERDALALVEN,12270.59961,Increasing,Increasing,648.0,sub_humid_400_800
+"NEAR MISSOULA, MT",BITTERROOT RIVER,7288.299805,Decreasing,Increasing,343.0,dry_arid_semiarid_lt400
+"AUBURN, NE",LITTLE NEMAHA RIVER,2051.300049,Increasing*,Increasing,836.0,humid_gt800
+KUZNICA SKAKAWSKA,NIESOB,243.0099945,Increasing,Decreasing,573.0,sub_humid_400_800
+DRYDEN,WABIGOON RIVER,2300.0,Increasing,Increasing,700.0,sub_humid_400_800
+"PALMDALE, FLA.",FISHEATING CREEK,805.5,Decreasing,Decreasing,1224.0,humid_gt800
+"LONDON MILLS, IL",SPOON RIVER,2776.5,Increasing*,Increasing,935.0,humid_gt800
+HEISEL,OTRA,3689.0,Increasing*,Decreasing*,1651.0,humid_gt800
+"NEAR ORA, IN",TIPPECANOE RIVER,2217.0,Increasing,Increasing,956.0,humid_gt800
+UPPER CROSSING,LIARD RIVER,33400.0,Decreasing,Increasing,417.0,sub_humid_400_800
+"NEAR CONESVILLE, IA",CEDAR RIVER,20168.30078,Increasing,Increasing,923.0,humid_gt800
+BELOW BEARSPAWN DAM,BOW RIVER,7770.0,Increasing*,Increasing,446.0,sub_humid_400_800
+"FOXHOLM, ND",DES LACS RIVER,2432.0,Increasing*,Decreasing,430.0,sub_humid_400_800
+"WILLIAMSBURG, KY",CUMBERLAND RIVER,4162.100098,Decreasing,Decreasing,1269.0,humid_gt800
+AIRYHEMMING,"LUCE, WATER OF",171.0,Increasing,Increasing,1298.0,humid_gt800
+NEAR GUY,LITTLE SMOKY RIVER,11100.0,Increasing*,Decreasing*,474.0,sub_humid_400_800
+LANKELA,LEPSAMANJOKI,4283.0,Increasing*,Decreasing*,511.0,sub_humid_400_800
+NEAR DALLAS,FISHER RIVER,1720.0,Increasing*,Increasing,549.0,sub_humid_400_800
+BELOW MUKETEI RIVER,ATTAWAPISKAT RIVER,36000.0,Increasing*,Decreasing,617.0,sub_humid_400_800
+FIZANTKRAAL,VETRIVIER,16153.0,Increasing,Decreasing,521.0,sub_humid_400_800
+UNTERKIRCHBACH,HAGENBACH,5.699999809,Decreasing*,Increasing,598.0,sub_humid_400_800
+EGGAFOSS,GAULA,654.2399902,Increasing,Decreasing,815.0,humid_gt800
+NEAR NORQUAY,SWAN RIVER,1920.0,Increasing,Increasing,527.0,sub_humid_400_800
+NEAR THOMPSON,BURNTWOOD RIVER,18500.0,Increasing*,Decreasing*,521.0,sub_humid_400_800
+NEAR THOMPSON,ODEI RIVER,6130.0,Increasing*,Decreasing*,516.0,sub_humid_400_800
+"EMINENCE, MO",JACKS FORK,1030.800049,Increasing,Increasing,1121.0,humid_gt800
+"NEAR REDROCK,NM",GILA RIVER,7327.100098,Decreasing,Increasing,362.0,dry_arid_semiarid_lt400
+ISENTHAL,GROSSTALBACH,43.90000153,Decreasing*,Increasing,1546.0,humid_gt800
+"BELOW ROCK ISLAND DAM, WA",COLUMBIA RIVER,231546.0,Decreasing*,Decreasing*,216.0,dry_arid_semiarid_lt400
+BROMOELLE,AMOSE A,291.0,Increasing*,Decreasing*,603.0,sub_humid_400_800
+HAUSEN,ZABER,109.5,Decreasing,Increasing,806.0,humid_gt800
+MATTICE,MISSINAIBI RIVER,8940.0,Decreasing,Increasing,865.0,humid_gt800
+HARBURG,WORNITZ,1578.0,Decreasing,Increasing,762.0,sub_humid_400_800
+NEAR HINTON,WHISKEYJACK CREEK,3.130000114,Increasing,Decreasing,550.0,sub_humid_400_800
+NEAR HINTON,WILDHAY RIVER,959.0,Increasing,Decreasing,581.0,sub_humid_400_800
+NEAR HINTON,EUNICE CREEK,17.10000038,Increasing,Decreasing,571.0,sub_humid_400_800
+NEAR HINTON,DEERLICK CREEK,14.0,Increasing,Decreasing,571.0,sub_humid_400_800
+NEAR HINTON,WAMPUS CREEK,25.37999916,Increasing,Decreasing,571.0,sub_humid_400_800
+WECHSELBURG 1,ZWICKAUER MULDE,2107.0,Decreasing,Increasing,687.0,sub_humid_400_800
+TUDULINNA,TAGAJOGI,252.0,Decreasing,Decreasing,616.0,sub_humid_400_800
+NEAR VILLENEUVE,STURGEON RIVER,1910.0,Increasing,Decreasing*,478.0,sub_humid_400_800
+GLAN TEIFI,"TEIFI, AFON",893.5999756,Increasing,Increasing*,1097.0,humid_gt800
+"HERMANN, MO.",MISSOURI RIVER,1357678.0,Increasing,Increasing,995.0,humid_gt800
+BAVARIA,WILGERIVIER,7497.0,Decreasing,Increasing,699.0,sub_humid_400_800
+"GOLD CREEK, AK",SUSITNA RIVER,15954.0,Increasing,Decreasing*,735.0,sub_humid_400_800
+"KINSTON, NC",NEUSE RIVER,6972.299805,Increasing,Decreasing*,1285.0,humid_gt800
+BRIDGE OF TEITH,"TEITH, RIVER",517.7000122,Increasing,Increasing*,1547.0,humid_gt800
+MISLINGFORD,"MEON, RIVER",72.80000305,Decreasing,Increasing,844.0,humid_gt800
+"WEST POINT, GA",CHATTAHOOCHEE RIVER,9194.5,Increasing,Decreasing*,1375.0,humid_gt800
+KAIDESLUOMO,LAPUANJOKI,45.5,Increasing,Decreasing,565.0,sub_humid_400_800
+BELOW IMPERIAL RIVER,CARCAJOU RIVER,6860.0,Increasing,Decreasing,319.0,dry_arid_semiarid_lt400
+TAHKUSE,PARNU JOGI,2080.0,Increasing,Increasing,706.0,sub_humid_400_800
+PUDISOO,PUDISOO JOGI,123.0,Increasing*,Decreasing*,660.0,sub_humid_400_800
+BULKEN,VOSSEELVEN,1102.0,Decreasing*,Increasing*,2400.0,humid_gt800
+"NEAR FORT CHURCHILL, NV",CARSON RIVER,3755.5,Increasing,Decreasing,141.0,dry_arid_semiarid_lt400
+"KING HILL, ID",SNAKE RIVER,92722.0,Increasing*,Decreasing*,335.0,dry_arid_semiarid_lt400
+JUSANTE FOZ PEIXOTO DE AZEVEDO,"SAO MANOEL, RIO",81600.0,Increasing,Increasing*,2225.0,humid_gt800
+CALBE-GRIZEHNE,SAALE,23719.0,Decreasing,Increasing,501.0,sub_humid_400_800
+MITTELSCHMALKALDEN,SCHMALKALDE,153.0,Increasing,Increasing,820.0,humid_gt800
+ABOVE BLOODVEIN BAY,BLOODVEIN RIVER,9090.0,Increasing,Increasing,581.0,sub_humid_400_800
+INTSCHEDE,WESER,37720.0,Decreasing,Increasing,706.0,sub_humid_400_800
+USTRON OBLAZIEC,VISTULA,107.3899994,Increasing,Decreasing,935.0,humid_gt800
+NEAR DRIFTPILE,DRIFTPILE RIVER,840.0,Increasing*,Decreasing,476.0,sub_humid_400_800
+ZLEBY,DOUBRAVA,381.8399963,Decreasing,Increasing,487.0,sub_humid_400_800
+VALEX,STROEMSAN,60.40000153,Decreasing,Increasing*,841.0,humid_gt800
+P脰STO FUNAI,"MUCAJAI, RIO",9300.0,Increasing,Increasing,2147.0,humid_gt800
+DE EERSTEPOORT,SEEKOEIRIVIER,8266.0,Decreasing,Decreasing,365.0,dry_arid_semiarid_lt400
+FE E ESPERANCE,"MUCAJAI, RIO",13658.0,Increasing,Increasing,1950.0,humid_gt800
+KNAPPOM,FLISA,1625.0,Decreasing*,Increasing,729.0,sub_humid_400_800
+NEAR THE 760 M CONTOUR,AKIE RIVER,1700.0,Increasing,Decreasing,564.0,sub_humid_400_800
+BACABAL,"MEARIM, RIO",27650.0,Increasing,Decreasing,1639.0,humid_gt800
+"ROANOKE RAPIDS, N.C.",ROANOKE RIVER,21714.59961,Decreasing,Increasing*,1128.0,humid_gt800
+SANTA ROSA DE LIMA,"SERGIPE, RIO",1960.0,Decreasing,Decreasing,1210.0,humid_gt800
+"MUSCODA,, WI",WISCONSIN RIVER,26936.0,Increasing,Decreasing,828.0,humid_gt800
+WINTERTON (27661710),LITTLE TUGELA,779.0,Decreasing,Increasing,797.0,sub_humid_400_800
+NEAR BROCHET,COCHRANE RIVER,28400.0,Increasing,Decreasing,454.0,sub_humid_400_800
+CIGACICE,ODER RIVER,39901.32813,Increasing,Decreasing,560.0,sub_humid_400_800
+NOWY SACZ,DUNAJEC,4337.459961,Increasing,Increasing,810.0,humid_gt800
+PELTOKOSKI,KARJAANJOKI,1935.0,Decreasing,Decreasing,660.0,sub_humid_400_800
+KILAI BRU,KILA,64.37000275,Decreasing,Increasing,1097.0,humid_gt800
+HOVI,KARJAANJOKI,0.119999997,Increasing,Decreasing*,660.0,sub_humid_400_800
+"NEAR GAINESVILLE, TX",RED RIVER,79725.39844,Decreasing,Increasing,959.0,humid_gt800
+TURI-ALLIKU,PARNU JOGI,579.0,Decreasing*,Increasing,687.0,sub_humid_400_800
+NEAR STEEN RIVER,STEEN RIVER,2610.0,Increasing,Decreasing,352.0,dry_arid_semiarid_lt400
+NEAR STEEN RIVER,LUTOSE CREEK,292.0,Increasing,Decreasing,356.0,dry_arid_semiarid_lt400
+"BOONVILLE, MO",MISSOURI RIVER,1296813.0,Decreasing,Increasing,1021.0,humid_gt800
+GUIDO,"MENDOZA, RIO",8180.0,Increasing*,Decreasing,244.0,dry_arid_semiarid_lt400
+LACOVIA,BLACK RIVER,640.0,Increasing,Decreasing,1723.0,humid_gt800
+GLUSZYNA,KOPLA,410.8800049,Increasing,Decreasing,502.0,sub_humid_400_800
+ABOVE ALEY CREEK,OSPIKA RIVER,2220.0,Increasing,Decreasing,583.0,sub_humid_400_800

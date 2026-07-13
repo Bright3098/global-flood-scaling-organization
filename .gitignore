@@ -69,6 +69,15 @@ organize_gplw.ps1
 Result3
 result_1_2
 
+# Small real case-data subsets used by examples.
+!examples/
+!examples/**
+!examples/case_data/**/*.csv
+!examples/case_data/**/*.nc
+!examples/case_data/**/*.md
+examples/**/__pycache__/
+examples/**/*.py[cod]
+
 # Generated RC figure outputs
 code/RC_figure_csvs_1minus_beta/
 code/RC_final_figures_1minus_beta/

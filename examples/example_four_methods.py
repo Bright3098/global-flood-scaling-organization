@@ -15,11 +15,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-# Edit these paths for a real case.
-DAILY_STREAMFLOW_DIR = ROOT / "Data" / "daily_streamflow_csv"
-FLOOD_EVENT_NC_DIR = ROOT / "Data" / "flood_event_nc"
-AREA_TREND_TABLE = ROOT / "Data" / "station_area_trend_table.csv"
-OUTPUT_DIR = ROOT / "outputs" / "example_case"
+# Small real-data subsets committed under examples/case_data.
+CASE_DATA = ROOT / "examples" / "case_data"
+DAILY_STREAMFLOW_DIR = CASE_DATA / "01_flood_extraction"
+FLOOD_EVENT_NC_DIR = CASE_DATA / "02_rc_calculation"
+FLOOD_EVENT_SUMMARY_CSV = CASE_DATA / "03_trend_calculation" / "barcoo_flood_events_summary_1969_2015.csv"
+AREA_TREND_TABLE = CASE_DATA / "04_otsu_like_method" / "station_area_trend_case.csv"
+OUTPUT_DIR = ROOT / "outputs" / "case_data_run"
 
 
 def commands() -> list[list[str]]:
@@ -51,9 +53,11 @@ def commands() -> list[list[str]]:
             sys.executable,
             str(ROOT / "code" / "03_trend_calculation" / "compute_qpeak_trends.py"),
             "--events-csv",
-            str(flood_csv_dir / "ALL_flood_events_summary.csv"),
+            str(FLOOD_EVENT_SUMMARY_CSV),
             "--out-dir",
             str(trend_dir),
+            "--min-annual-stations",
+            "1",
         ],
         [
             sys.executable,
@@ -63,9 +67,9 @@ def commands() -> list[list[str]]:
             "--out-dir",
             str(otsu_dir),
             "--area-col",
-            "area_km2",
+            "area",
             "--trend-col",
-            "trend_direction",
+            "Slope_Trend_MK",
         ],
     ]
 
