@@ -1,0 +1,362 @@
+{
+  "source": "hydrographs.csv",
+  "source_sha256": "1fed056b45afd1bcd474d017d818c483f6d64b7b568949196c82ab27760a0a6e",
+  "fitted_indices_source": "fitted_indices.csv",
+  "fitted_indices_source_sha256": "9d6122f71e1cdc81dcf02709a42318d24170ec81b9ce4c5b6288150839786b68",
+  "indices_fitted_by_plotter": false,
+  "indices_display_decimal_places": 3,
+  "panel_count": 4,
+  "curve_counts": {
+    "a": 5,
+    "b": 3,
+    "c": 3,
+    "d": 3
+  },
+  "shared_time_range_days": [
+    0.0,
+    20.0
+  ],
+  "shared_discharge_range_mm_day": [
+    0,
+    20.0
+  ],
+  "shared_time_ticks_days": [
+    0,
+    5,
+    10,
+    15,
+    20
+  ],
+  "shared_discharge_ticks": [
+    0.0,
+    5.0,
+    10.0,
+    15.0,
+    20.0
+  ],
+  "time_origin": "Rainfall onset; earliest tributary onset in panel d",
+  "peak_alignment": false,
+  "discharge_rescaling": false,
+  "normalization": false,
+  "interpolation": "Shape-preserving cubic Hermite interpolation through supplied daily values; display only",
+  "extrapolation": false,
+  "negative_value_clipping": false,
+  "numerical_tolerance": 1e-10,
+  "all_interpolation_checks_passed": true,
+  "curves": [
+    {
+      "panel": "a",
+      "scenario_id": "rain60",
+      "label": "60 mm / 6 days",
+      "baseline": false,
+      "FAI": 0.3927052919637976,
+      "FCI": 0.43277500147028236,
+      "source_daily_count": 732,
+      "source_time_range": [
+        -4.5,
+        726.5
+      ],
+      "display_point_count": 1601,
+      "daily_peak_mm_day": 1.8581227208703952,
+      "color": "#0072B2",
+      "line_dash": null,
+      "maximum_interval_overshoot_mm_day": 3.3306690738754696e-16,
+      "maximum_monotonicity_violation": 4.440892098500626e-16,
+      "maximum_knot_error_mm_day": 3.639594695233322e-23,
+      "maximum_derivative_jump": 7.216449660063518e-16,
+      "all_checks_passed": true
+    },
+    {
+      "panel": "a",
+      "scenario_id": "baseline_a",
+      "label": "120 mm / 6 days (base)",
+      "baseline": true,
+      "FAI": 1.1238907313816693,
+      "FCI": 0.5435455253662859,
+      "source_daily_count": 732,
+      "source_time_range": [
+        -4.5,
+        726.5
+      ],
+      "display_point_count": 1601,
+      "daily_peak_mm_day": 9.060417133956133,
+      "color": "#3F3F3F",
+      "line_dash": null,
+      "maximum_interval_overshoot_mm_day": 1.7763568394002505e-15,
+      "maximum_monotonicity_violation": 0.0,
+      "maximum_knot_error_mm_day": 6.617444900424222e-24,
+      "maximum_derivative_jump": 4.884981308350689e-15,
+      "all_checks_passed": true
+    },
+    {
+      "panel": "a",
+      "scenario_id": "rain180",
+      "label": "180 mm / 6 days",
+      "baseline": false,
+      "FAI": 1.426447535738387,
+      "FCI": 0.5438257102805494,
+      "source_daily_count": 732,
+      "source_time_range": [
+        -4.5,
+        726.5
+      ],
+      "display_point_count": 1601,
+      "daily_peak_mm_day": 17.834554382952593,
+      "color": "#D55E00",
+      "line_dash": null,
+      "maximum_interval_overshoot_mm_day": 5.329070518200751e-15,
+      "maximum_monotonicity_violation": 0.0,
+      "maximum_knot_error_mm_day": 0.0,
+      "maximum_derivative_jump": 1.0658141036401503e-14,
+      "all_checks_passed": true
+    },
+    {
+      "panel": "a",
+      "scenario_id": "duration3",
+      "label": "120 mm / 3 days",
+      "baseline": false,
+      "FAI": 1.2359902698542171,
+      "FCI": 0.6248582386484091,
+      "source_daily_count": 732,
+      "source_time_range": [
+        -4.5,
+        726.5
+      ],
+      "display_point_count": 1601,
+      "daily_peak_mm_day": 11.832787033355876,
+      "color": "#009E73",
+      "line_dash": [
+        4,
+        2
+      ],
+      "maximum_interval_overshoot_mm_day": 8.881784197001252e-16,
+      "maximum_monotonicity_violation": 4.440892098500626e-16,
+      "maximum_knot_error_mm_day": 6.617444900424222e-24,
+      "maximum_derivative_jump": 3.552713678800501e-15,
+      "all_checks_passed": true
+    },
+    {
+      "panel": "a",
+      "scenario_id": "duration12",
+      "label": "120 mm / 12 days",
+      "baseline": false,
+      "FAI": 0.913231306582054,
+      "FCI": 0.3995671774802113,
+      "source_daily_count": 732,
+      "source_time_range": [
+        -4.5,
+        726.5
+      ],
+      "display_point_count": 1601,
+      "daily_peak_mm_day": 5.774221485017311,
+      "color": "#CC79A7",
+      "line_dash": [
+        4,
+        2
+      ],
+      "maximum_interval_overshoot_mm_day": 1.7763568394002505e-15,
+      "maximum_monotonicity_violation": 0.0,
+      "maximum_knot_error_mm_day": 7.279189390466644e-23,
+      "maximum_derivative_jump": 4.218847493575595e-15,
+      "all_checks_passed": true
+    },
+    {
+      "panel": "b",
+      "scenario_id": "soil20",
+      "label": "SM\u2080/FC = 0.2",
+      "baseline": false,
+      "FAI": 0.6407660044736424,
+      "FCI": 0.5116731470704599,
+      "source_daily_count": 732,
+      "source_time_range": [
+        -4.5,
+        726.5
+      ],
+      "display_point_count": 1601,
+      "daily_peak_mm_day": 3.0973990476031115,
+      "color": "#0072B2",
+      "line_dash": null,
+      "maximum_interval_overshoot_mm_day": 1.3322676295501878e-15,
+      "maximum_monotonicity_violation": 2.6645352591003757e-15,
+      "maximum_knot_error_mm_day": 1.3234889800848443e-23,
+      "maximum_derivative_jump": 2.6645352591003757e-15,
+      "all_checks_passed": true
+    },
+    {
+      "panel": "b",
+      "scenario_id": "soil50",
+      "label": "SM\u2080/FC = 0.5 (base)",
+      "baseline": true,
+      "FAI": 1.1238907313816693,
+      "FCI": 0.5435455253662859,
+      "source_daily_count": 732,
+      "source_time_range": [
+        -4.5,
+        726.5
+      ],
+      "display_point_count": 1601,
+      "daily_peak_mm_day": 9.060417133956133,
+      "color": "#3F3F3F",
+      "line_dash": null,
+      "maximum_interval_overshoot_mm_day": 1.7763568394002505e-15,
+      "maximum_monotonicity_violation": 0.0,
+      "maximum_knot_error_mm_day": 6.617444900424222e-24,
+      "maximum_derivative_jump": 4.884981308350689e-15,
+      "all_checks_passed": true
+    },
+    {
+      "panel": "b",
+      "scenario_id": "soil80",
+      "label": "SM\u2080/FC = 0.8",
+      "baseline": false,
+      "FAI": 1.367013580268737,
+      "FCI": 0.5268348636272048,
+      "source_daily_count": 732,
+      "source_time_range": [
+        -4.5,
+        726.5
+      ],
+      "display_point_count": 1601,
+      "daily_peak_mm_day": 15.343856676117117,
+      "color": "#D55E00",
+      "line_dash": null,
+      "maximum_interval_overshoot_mm_day": 3.552713678800501e-15,
+      "maximum_monotonicity_violation": 0.0,
+      "maximum_knot_error_mm_day": 6.617444900424222e-24,
+      "maximum_derivative_jump": 8.43769498715119e-15,
+      "all_checks_passed": true
+    },
+    {
+      "panel": "c",
+      "scenario_id": "routing1",
+      "label": "MAXBAS = 1 day",
+      "baseline": false,
+      "FAI": 1.1587775264166023,
+      "FCI": 0.5723146538383452,
+      "source_daily_count": 730,
+      "source_time_range": [
+        -4.5,
+        724.5
+      ],
+      "display_point_count": 1601,
+      "daily_peak_mm_day": 9.661583719903636,
+      "color": "#0072B2",
+      "line_dash": null,
+      "maximum_interval_overshoot_mm_day": 1.7763568394002505e-15,
+      "maximum_monotonicity_violation": 0.0,
+      "maximum_knot_error_mm_day": 1.0587911840678754e-22,
+      "maximum_derivative_jump": 7.327471962526033e-15,
+      "all_checks_passed": true
+    },
+    {
+      "panel": "c",
+      "scenario_id": "routing3",
+      "label": "MAXBAS = 3 days (base)",
+      "baseline": true,
+      "FAI": 1.1238907313816693,
+      "FCI": 0.5435455253662859,
+      "source_daily_count": 732,
+      "source_time_range": [
+        -4.5,
+        726.5
+      ],
+      "display_point_count": 1601,
+      "daily_peak_mm_day": 9.060417133956133,
+      "color": "#3F3F3F",
+      "line_dash": null,
+      "maximum_interval_overshoot_mm_day": 1.7763568394002505e-15,
+      "maximum_monotonicity_violation": 0.0,
+      "maximum_knot_error_mm_day": 6.617444900424222e-24,
+      "maximum_derivative_jump": 4.884981308350689e-15,
+      "all_checks_passed": true
+    },
+    {
+      "panel": "c",
+      "scenario_id": "routing7",
+      "label": "MAXBAS = 7 days",
+      "baseline": false,
+      "FAI": 1.011477952754421,
+      "FCI": 0.4515251102854918,
+      "source_daily_count": 736,
+      "source_time_range": [
+        -4.5,
+        730.5
+      ],
+      "display_point_count": 1601,
+      "daily_peak_mm_day": 7.15450718769186,
+      "color": "#D55E00",
+      "line_dash": null,
+      "maximum_interval_overshoot_mm_day": 1.3322676295501878e-15,
+      "maximum_monotonicity_violation": 0.0,
+      "maximum_knot_error_mm_day": 8.271806125530277e-25,
+      "maximum_derivative_jump": 3.1086244689504383e-15,
+      "all_checks_passed": true
+    },
+    {
+      "panel": "d",
+      "scenario_id": "lag0",
+      "label": "Lag = 0 days (base)",
+      "baseline": true,
+      "FAI": 1.1238907313816693,
+      "FCI": 0.5435455253662859,
+      "source_daily_count": 732,
+      "source_time_range": [
+        -4.5,
+        726.5
+      ],
+      "display_point_count": 1601,
+      "daily_peak_mm_day": 9.060417133956133,
+      "color": "#3F3F3F",
+      "line_dash": null,
+      "maximum_interval_overshoot_mm_day": 1.7763568394002505e-15,
+      "maximum_monotonicity_violation": 0.0,
+      "maximum_knot_error_mm_day": 6.617444900424222e-24,
+      "maximum_derivative_jump": 4.884981308350689e-15,
+      "all_checks_passed": true
+    },
+    {
+      "panel": "d",
+      "scenario_id": "lag2",
+      "label": "Lag = 2 days",
+      "baseline": false,
+      "FAI": 1.0488184871334492,
+      "FCI": 0.48111563387331646,
+      "source_daily_count": 732,
+      "source_time_range": [
+        -4.5,
+        726.5
+      ],
+      "display_point_count": 1601,
+      "daily_peak_mm_day": 7.736347363843993,
+      "color": "#0072B2",
+      "line_dash": null,
+      "maximum_interval_overshoot_mm_day": 8.881784197001252e-16,
+      "maximum_monotonicity_violation": 0.0,
+      "maximum_knot_error_mm_day": 2.6469779601696886e-23,
+      "maximum_derivative_jump": 3.3306690738754696e-15,
+      "all_checks_passed": true
+    },
+    {
+      "panel": "d",
+      "scenario_id": "lag3",
+      "label": "Lag = 3 days",
+      "baseline": false,
+      "FAI": 0.9550280020680825,
+      "FCI": 0.40283416218015833,
+      "source_daily_count": 732,
+      "source_time_range": [
+        -4.5,
+        726.5
+      ],
+      "display_point_count": 1601,
+      "daily_peak_mm_day": 6.332399041975716,
+      "color": "#D55E00",
+      "line_dash": null,
+      "maximum_interval_overshoot_mm_day": 1.7763568394002505e-15,
+      "maximum_monotonicity_violation": 0.0,
+      "maximum_knot_error_mm_day": 0.0,
+      "maximum_derivative_jump": 4.218847493575595e-15,
+      "all_checks_passed": true
+    }
+  ]
+}

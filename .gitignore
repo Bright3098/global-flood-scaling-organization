@@ -82,3 +82,11 @@ examples/**/*.py[cod]
 code/RC_figure_csvs_1minus_beta/
 code/RC_final_figures_1minus_beta/
 code/RC_robustness*/
+
+# Small checked reference outputs shipped with the core and HBV demonstrations.
+!expected_outputs/core/**/*.csv
+!expected_outputs/core/**/*.nc
+!code/05_hbv_sensitivity/expected_outputs/**/*.csv
+!code/05_hbv_sensitivity/expected_outputs/**/*.pdf
+!code/05_hbv_sensitivity/expected_outputs/**/*.svg
+!code/05_hbv_sensitivity/expected_outputs/**/*.png

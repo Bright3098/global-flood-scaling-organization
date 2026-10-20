@@ -1,0 +1,8 @@
+metric,value
+n_stations,1.0
+n_station_years,36.0
+annual_median_slope_pct_per_decade,-0.7518614206474855
+annual_median_kendall_tau,-0.006349206349206349
+annual_median_kendall_p,0.9565498931849237
+station_decrease_count,1.0
+station_increase_count,0.0

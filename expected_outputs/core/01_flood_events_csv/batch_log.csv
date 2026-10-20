@@ -1,0 +1,2 @@
+file,status,n_events
+examples/case_data/01_flood_extraction/mogami_302111282214010_daily_ts_1980_1984.csv,ok,5

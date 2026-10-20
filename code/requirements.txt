@@ -1,5 +1,5 @@
-numpy
-pandas
-scipy
-netCDF4
-openpyxl
+numpy==2.1.3
+pandas==2.2.3
+scipy==1.15.3
+netCDF4==1.7.2
+openpyxl==3.1.5

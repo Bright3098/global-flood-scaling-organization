@@ -1,184 +1,42 @@
-# Nature Research Code and Software Submission Checklist
+# Evidence for the software submission checklist
 
-This repository is prepared as a minimal code and case-data package for review.
+This checklist describes the current public repository, including explicit
+FAI/FCI outputs, the updated core workflows and HBV sensitivity experiments.
+The verification records below were generated on 20 October 2026.
 
-## Required Content
+| Checklist item | Repository evidence |
+| --- | --- |
+| Source code | `code/01_flood_extraction/` through `code/05_hbv_sensitivity/` |
+| Small demonstration dataset | `examples/case_data/`; HBV forcings are generated internally |
+| Dependencies and operating-system versions | Root README, `requirements-core.txt`, HBV requirements and measured run reports |
+| Tested software versions | Root README, `docs/core_verification.json` and the HBV complete-run report |
+| Non-standard hardware | None for the supplied CPU demonstrations |
+| Installation instructions | Root README and `docs/HBV_README.md` |
+| Typical installation time | Root README gives a labelled 5-15-minute estimate; installation was not timed |
+| Demo instructions | Root README, `examples/example_four_methods.py` and HBV `run_all.py` |
+| Expected outputs | `expected_outputs/core/` and `code/05_hbv_sensitivity/expected_outputs/` |
+| Expected demo runtime | Measured core and HBV runtimes in the README and verification records |
+| Use on other data | Root README commands, input contract, unit conventions and HBV parameter instructions |
+| Optional reproduction of every quantitative result | Not met: complete global datasets and every model/figure pipeline are outside this repository |
 
-### Source Code
+The four core demos completed in 5.69 seconds and the five core-definition
+tests present on 20 October passed in 1.20 seconds. The current test suite also
+includes output/window tests. The complete HBV workflow, including the figure, took 1.948
+seconds; all 14 labelled scenario results matched the final experiment's
+reference values. These are single-run measurements on Windows 11. Installation
+time, other operating systems and independent-colleague installation testing
+were not measured or tested.
 
-The repository includes source code for four workflows:
+- [Installation, dependencies and usage](../README.md)
+- [Core verification record](core_verification.json)
+- [Algorithm definitions and version history](ALGORITHMS_AND_VERSION_NOTES.md)
+- [HBV methods and validation](HBV_README.md)
+- [HBV complete-run report](../code/05_hbv_sensitivity/expected_outputs/run_report.json)
+- [MIT License for the code](../LICENSE)
 
-- `code/01_flood_extraction/extract_flood_events.py`
-- `code/02_rc_calculation/compute_event_rc_from_flood_events.py`
-- `code/03_trend_calculation/compute_qpeak_trends.py`
-- `code/04_otsu_like_method/otsu_like_area_threshold.py`
+Repository: https://github.com/Bright3098/global-flood-scaling-organization
 
-No compiled standalone software is required.
-
-### Demo Dataset
-
-Small real-data subsets are included under `examples/case_data/`:
-
-- Daily streamflow CSV for flood extraction.
-- A small `flood_events__*.nc` NetCDF file for `R` and `C` calculation.
-- A flood-event summary CSV for trend calculation.
-- A station area/trend CSV for the Otsu-like threshold method.
-
-These files are real GPLW workspace subsets, not synthetic data. Full research
-datasets are intentionally excluded from GitHub.
-
-## README Requirements
-
-### System Requirements
-
-Tested operating system:
-
-- Windows 10
-
-Expected compatible systems:
-
-- Windows, Linux, or macOS with Python and the listed scientific Python
-  packages installed.
-
-Software dependencies:
-
-- Python 3.11 or newer
-- numpy
-- pandas
-- scipy
-- netCDF4
-- openpyxl
-
-Environment files:
-
-- `environment.yml`
-- `code/requirements.txt`
-
-Tested version snapshot from the local machine:
-
-- Python 3.13.5
-- numpy 2.1.3
-- pandas 2.2.3
-- scipy 1.15.3
-- netCDF4 1.7.2
-
-No non-standard hardware is required. The code runs on CPU.
-
-### Installation Guide
-
-Recommended conda installation:
-
-```powershell
-conda env create -f environment.yml
-conda activate gplw-core
-```
-
-Alternative pip installation:
-
-```powershell
-pip install -r code/requirements.txt
-```
-
-Typical install time on a normal desktop computer is a few minutes with conda or
-pip, depending on network speed.
-
-### Demo Instructions
-
-Print the commands:
-
-```powershell
-python examples/example_four_methods.py
-```
-
-Run all four demos:
-
-```powershell
-python examples/example_four_methods.py --execute
-```
-
-Expected runtime for the included demo on a normal desktop computer is under one
-minute.
-
-Expected output folder:
-
-```text
-outputs/case_data_run/
-```
-
-Expected key files:
-
-- `outputs/case_data_run/01_flood_events_csv/ALL_flood_events_summary.csv`
-- `outputs/case_data_run/01_flood_events_csv/ALL_flood_events_timeseries.csv`
-- `outputs/case_data_run/02_event_rc/scaling_RC__barcoo_blackall_case.nc`
-- `outputs/case_data_run/03_qpeak_trends/qpeak_trend_summary.csv`
-- `outputs/case_data_run/04_otsu_like_threshold/otsu_like_threshold_summary.csv`
-
-### Instructions For Use On New Data
-
-Flood event extraction:
-
-```powershell
-python code/01_flood_extraction/extract_flood_events.py --input-root Data/daily_streamflow_csv --out-dir outputs/flood_events_csv --workers 4
-```
-
-`R` and `C` calculation:
-
-```powershell
-python code/02_rc_calculation/compute_event_rc_from_flood_events.py --in-dir Data/flood_event_nc --out-dir outputs/event_rc
-```
-
-Flood-peak trend calculation:
-
-```powershell
-python code/03_trend_calculation/compute_qpeak_trends.py --events-csv outputs/flood_events_csv/ALL_flood_events_summary.csv --out-dir outputs/qpeak_trends
-```
-
-Otsu-like area threshold:
-
-```powershell
-python code/04_otsu_like_method/otsu_like_area_threshold.py --input Data/station_area_trend_table.csv --out-dir outputs/otsu_like_threshold --area-col area_km2 --trend-col trend_direction
-```
-
-## Additional Information
-
-### License
-
-The repository uses the MIT License. See `LICENSE`.
-
-### Open Source Repository
-
-Repository link:
-
-https://github.com/Bright3098/global-flood-scaling-organization
-
-### Code Functionality
-
-High-level pseudocode:
-
-1. Flood extraction
-   - Read daily streamflow CSV files.
-   - Detect date and discharge columns.
-   - For each station-year, identify the annual peak.
-   - Expand backward to the rising limb and forward to recession.
-   - Save event summaries and event time series.
-
-2. `R` and `C` calculation
-   - Read `flood_events__*.nc` files.
-   - For each event, calculate maximum accumulated water volume `W(T)` over
-     multiple durations `T`.
-   - Fit `log10(W) = log10(R) + C * log10(T_hours)`.
-   - Save event-level `R`, `C`, fit `r2`, and point counts.
-
-3. Flood-peak trend calculation
-   - Read flood-event summaries.
-   - Convert multiple events per station-year to annual maximum peak flow.
-   - Normalize each station by its baseline mean.
-   - Estimate Theil-Sen slopes and Kendall trend significance.
-   - Save station-level and annual trend summaries.
-
-4. Otsu-like area threshold
-   - Read a station area/trend table.
-   - Convert trend direction to a binary increase/decrease indicator.
-   - Scan candidate thresholds along `log10(area)`.
-   - Select the threshold maximizing between-group trend separation.
-   - Save prepared input, full threshold scan, and best-threshold summary.
+Algorithm descriptions appear in the manuscript Methods and Supplementary
+Notes 1 and 3-6. HBV-specific locations are Supplementary Note 6 and Extended
+Data Fig. 5. Data-provider terms apply to the original observational datasets.
+An archival DOI has not been assigned.

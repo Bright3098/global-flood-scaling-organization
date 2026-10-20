@@ -1,0 +1,55 @@
+{
+  "provenance": "Source hashes record the local core snapshot used for the 2026-10-20 review package. Published hashes below record this repository update after documented changes.",
+  "public_repository_commit": "fecae272d182068244d3298b83f56d6e9e417704",
+  "change": "Publish explicit FAI/FCI outputs, validate custom durations against the sampling interval, and label event-length caps; retain R, beta and C.",
+  "source_files": [
+    {
+      "path": "code/01_flood_extraction/extract_flood_events.py",
+      "source_sha256": "3be0a7916205f370db61055f07764dcee74fb870ab145fc8e8b2e9e8df4af46b"
+    },
+    {
+      "path": "code/02_rc_calculation/compute_event_rc_from_flood_events.py",
+      "source_sha256": "5c753e6eb684d9e29f9385a0e1394e82d6152c00ae96408ac27a53ea09d8c343"
+    },
+    {
+      "path": "code/03_trend_calculation/compute_qpeak_trends.py",
+      "source_sha256": "2471327ef6465ea23dfb094bdfe19c880344c23fc9bba378fbc5011b60ff2aa4"
+    },
+    {
+      "path": "code/04_otsu_like_method/otsu_like_area_threshold.py",
+      "source_sha256": "72110e3936f8463e3b8579c2c81308c2bedc90645153ac2e438a613362639953"
+    },
+    {
+      "path": "code/tests/test_core_definitions.py",
+      "source_sha256": "2379be3fee31867c8398a590e2b5703e425a912e06d3d97346df1f7e918501ce"
+    },
+    {
+      "path": "examples/case_data/README.md",
+      "source_sha256": "c6db905b44dcbd35dfff7d400e835018c76af63e06b48f5929766e4a4621875d"
+    },
+    {
+      "path": "examples/case_data/01_flood_extraction/mogami_302111282214010_daily_ts_1980_1984.csv",
+      "source_sha256": "af78834866870ccd65bf811370ea69b8727504469b62f281dc2d4664c08b4819"
+    },
+    {
+      "path": "examples/case_data/02_rc_calculation/flood_events__barcoo_blackall_case.nc",
+      "source_sha256": "9f55db03d6a9e0f06ab14ed49922994c0e01b8c69ad473ca744a4aeac503446b"
+    },
+    {
+      "path": "examples/case_data/03_trend_calculation/barcoo_flood_events_summary_1969_2015.csv",
+      "source_sha256": "0452a60ec37c4e5f278f4224e30281a2e8006c9bada06e2686ea3262e78d9135"
+    },
+    {
+      "path": "examples/case_data/04_otsu_like_method/station_area_trend_case.csv",
+      "source_sha256": "6f9cb88a7ee4493a1fbb03ea0f50b20c2a6dc1f7a7e81bba1383089c2a36c2db"
+    }
+  ],
+  "published_source_sha256": {
+    "code/01_flood_extraction/extract_flood_events.py": "3be0a7916205f370db61055f07764dcee74fb870ab145fc8e8b2e9e8df4af46b",
+    "code/02_rc_calculation/compute_event_rc_from_flood_events.py": "29ff5ead4cec0aef2adb6d9b853f168855818a335c6dec42b3199126d57cb5fd",
+    "code/03_trend_calculation/compute_qpeak_trends.py": "2471327ef6465ea23dfb094bdfe19c880344c23fc9bba378fbc5011b60ff2aa4",
+    "code/04_otsu_like_method/otsu_like_area_threshold.py": "72110e3936f8463e3b8579c2c81308c2bedc90645153ac2e438a613362639953",
+    "code/tests/test_core_definitions.py": "2379be3fee31867c8398a590e2b5703e425a912e06d3d97346df1f7e918501ce",
+    "code/tests/test_fai_fci_outputs.py": "26a8f4563736cafb2e66890e9b9aa28e22bde267bb836632817f50f3b6513abd"
+  }
+}

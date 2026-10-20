@@ -8,15 +8,24 @@ Input files are `flood_events__*.nc` NetCDFs with an `event` dimension, an
 For each flood event, this script computes:
 
     W(T) = max_s[Vcum(s + T) - Vcum(s)]
-    log10(W) = log10(R) + C * log10(T_hours)
+    ln W(T) = R + beta * ln(T / 1 day)
+    C = 1 - beta
+
+The current implementation also exports FAI=R/ln(10) and FCI=C. FAI uses one
+input cumulative-volume unit as the reference volume at Tref=1 day.
+
+Thus R is the natural-log intercept at one day and C is the cross-duration
+concentration exponent of maximum window-mean discharge. By default every
+integer observation window from one step to the complete extracted event is
+used. ``--t-hours`` is retained only for explicitly labelled sensitivity runs.
 
 The output file mirrors the input name:
 
     flood_events__tag.nc -> scaling_RC__tag.nc
 
 This CPU implementation is intended for reproducible cases and small or medium
-test batches. The original full-production GPU version used in the local
-workspace is documented in `docs/CASE_FLOOD_RC_PIPELINE.md`.
+test batches. See the repository README and
+`docs/ALGORITHMS_AND_VERSION_NOTES.md` for the scope and unit conventions.
 """
 
 from __future__ import annotations
@@ -29,7 +38,6 @@ from typing import Iterable
 import numpy as np
 
 
-DEFAULT_T_HOURS = "24,48,72,96,120,168,240,336,504,720"
 FILL_I8 = np.int64(-9223372036854775806)
 
 
@@ -85,18 +93,36 @@ def infer_dt_hours(fin) -> float:
 
 
 def unique_t_steps(t_hours: np.ndarray, dt_hours: float) -> tuple[np.ndarray, np.ndarray]:
-    steps = np.rint(t_hours / dt_hours).astype(np.int32)
-    steps[steps < 1] = 1
+    if not np.isfinite(dt_hours) or dt_hours <= 0:
+        raise ValueError("The sampling interval must be finite and positive")
+    requested = np.asarray(t_hours, dtype=np.float64)
+    if np.any(~np.isfinite(requested)) or np.any(requested <= 0):
+        raise ValueError("--t-hours values must be finite and positive")
+    ratios = requested / dt_hours
+    rounded = np.rint(ratios)
+    valid = (
+        np.isclose(ratios, rounded, rtol=0.0, atol=1e-9)
+        & (rounded >= 1)
+        & (rounded <= np.iinfo(np.int32).max)
+    )
+    if not np.all(valid):
+        invalid = ", ".join(f"{value:g}" for value in requested[~valid])
+        raise ValueError(
+            "--t-hours values must be positive integer multiples of the "
+            f"sampling interval ({dt_hours:g} h); invalid values: {invalid} h"
+        )
+    steps = rounded.astype(np.int32)
 
     keep_hours: list[float] = []
     keep_steps: list[int] = []
     seen: set[int] = set()
-    for hour, step in zip(t_hours, steps):
+    for step in steps:
         s = int(step)
         if s in seen:
             continue
         seen.add(s)
-        keep_hours.append(float(hour))
+        # Regress against the duration actually represented by these samples.
+        keep_hours.append(float(s * dt_hours))
         keep_steps.append(s)
     return np.asarray(keep_hours, dtype=np.float64), np.asarray(keep_steps, dtype=np.int32)
 
@@ -128,22 +154,24 @@ def event_window_maxima(vcum: np.ndarray, t_steps: np.ndarray) -> np.ndarray:
     return out
 
 
-def fit_rc(w: np.ndarray, t_hours: np.ndarray) -> tuple[float, float, int, float]:
+def fit_rc(
+    w: np.ndarray,
+    t_days: np.ndarray,
+) -> tuple[float, float, float, int, float]:
     ok = np.isfinite(w) & (w > 0)
     n = int(ok.sum())
     if n < 2:
-        return np.nan, np.nan, n, np.nan
+        return np.nan, np.nan, np.nan, n, np.nan
 
-    x = np.log10(t_hours[ok])
-    y = np.log10(w[ok])
-    slope, intercept = np.polyfit(x, y, 1)
-    yhat = intercept + slope * x
+    x = np.log(t_days[ok])
+    y = np.log(w[ok])
+    beta, r_log = np.polyfit(x, y, 1)
+    yhat = r_log + beta * x
     ss_tot = float(np.sum((y - y.mean()) ** 2))
     ss_res = float(np.sum((y - yhat) ** 2))
     r2 = np.nan if ss_tot <= 0 else 1.0 - ss_res / ss_tot
-    R = 10.0 ** intercept
-    C = slope
-    return float(R), float(C), n, float(r2)
+    c_value = 1.0 - beta
+    return float(r_log), float(beta), float(c_value), n, float(r2)
 
 
 def create_output_file(nc, out_path: Path, ne: int, compression: int):
@@ -153,17 +181,22 @@ def create_output_file(nc, out_path: Path, ne: int, compression: int):
     fout.createDimension("event", ne)
     for name, dtype in [("event_id", "i8"), ("year", "i4"), ("lat", "f4"), ("lon", "f4")]:
         fout.createVariable(name, dtype, ("event",), **zopts)
-    fout.createVariable("R", "f4", ("event",), fill_value=np.float32(np.nan), **zopts)
-    fout.createVariable("C", "f4", ("event",), fill_value=np.float32(np.nan), **zopts)
+    fout.createVariable("R", "f8", ("event",), fill_value=np.float64(np.nan), **zopts)
+    fout.createVariable("R_amplitude", "f8", ("event",), fill_value=np.float64(np.nan), **zopts)
+    fout.createVariable("beta", "f8", ("event",), fill_value=np.float64(np.nan), **zopts)
+    fout.createVariable("C", "f8", ("event",), fill_value=np.float64(np.nan), **zopts)
+    fout.createVariable("FAI", "f8", ("event",), fill_value=np.float64(np.nan), **zopts)
+    fout.createVariable("FCI", "f8", ("event",), fill_value=np.float64(np.nan), **zopts)
     fout.createVariable("n_pts", "i2", ("event",), **zopts)
     fout.createVariable("r2", "f4", ("event",), fill_value=np.float32(np.nan), **zopts)
+    fout.createVariable("Tmax_days", "f4", ("event",), fill_value=np.float32(np.nan), **zopts)
     return fout
 
 
 def process_file(
     in_path: Path,
     out_path: Path,
-    t_hours_input: np.ndarray,
+    t_hours_input: np.ndarray | None,
     event_batch: int,
     max_event_len: int,
     compression: int,
@@ -189,9 +222,13 @@ def process_file(
             return f"[SKIP] no events: {in_path.name}"
 
         dt_hours = infer_dt_hours(fin)
-        t_hours, t_steps = unique_t_steps(t_hours_input, dt_hours)
-        if t_steps.size < 2:
-            raise ValueError(f"{in_path.name}: fewer than two unique T steps after dt conversion")
+        if t_hours_input is not None:
+            t_hours, fixed_t_steps = unique_t_steps(t_hours_input, dt_hours)
+            if fixed_t_steps.size < 2:
+                raise ValueError(f"{in_path.name}: fewer than two unique T steps after dt conversion")
+        else:
+            t_hours = None
+            fixed_t_steps = None
 
         tmp_path = out_path.with_suffix(out_path.suffix + ".tmp")
         if tmp_path.exists():
@@ -202,10 +239,38 @@ def process_file(
             fout.title = "Event-level flood volume scaling parameters"
             fout.source_file = str(in_path)
             fout.dt_hours = float(dt_hours)
-            fout.T_hours_input = ",".join(f"{x:g}" for x in t_hours_input)
-            fout.T_hours_used = ",".join(f"{x:g}" for x in t_hours)
-            fout.method = "log10(W)=log10(R)+C*log10(T_hours)"
+            fout.reference_duration_days = 1.0
+            fout.max_event_len_steps = int(max(0, max_event_len))
+            fout.fit_domain = (
+                "all integer observation windows from one step to the complete extracted event"
+                if t_hours_input is None
+                else "explicit fixed-window sensitivity"
+            )
+            if max_event_len > 0:
+                domain = (
+                    "all integer observation windows"
+                    if t_hours_input is None
+                    else "explicit fixed-window sensitivity"
+                )
+                fout.fit_domain = (
+                    f"{domain} within the first {max_event_len} observation "
+                    "steps of each extracted event (event-length cap)"
+                )
+            if t_hours_input is not None and t_hours is not None:
+                fout.T_hours_input = ",".join(f"{x:g}" for x in t_hours_input)
+                fout.T_hours_used = ",".join(f"{x:g}" for x in t_hours)
+            fout.method = "ln(W)=R+beta*ln(T/1day); FAI=R/ln(10); FCI=C=1-beta"
+            fout.reference_volume = "one input cumulative-volume unit"
+            fout.input_volume_units = str(getattr(fin.variables["Vcum"], "units", "not specified in input"))
             fout.complete = "false"
+
+            fout.variables["R"].long_name = "natural-log volume intercept at one day"
+            fout.variables["R_amplitude"].long_name = "exp(R) in the input cumulative-volume units"
+            fout.variables["beta"].long_name = "volume-duration scaling exponent"
+            fout.variables["C"].long_name = "cross-duration concentration exponent, 1-beta"
+            fout.variables["FAI"].long_name = "base-10 log intercept at one day, relative to one input volume unit"
+            fout.variables["FCI"].long_name = "cross-duration concentration exponent, 1-beta"
+            fout.variables["Tmax_days"].long_name = "maximum fitted window duration"
 
             v_event_id = fin.variables["event_id"]
             v_year = fin.variables["year"]
@@ -226,14 +291,21 @@ def process_file(
                 starts = v_obs_start[sl].astype(np.int64)
                 counts = v_obs_count[sl].astype(np.int32)
 
-                R = np.full(e1 - e0, np.nan, dtype=np.float32)
-                C = np.full(e1 - e0, np.nan, dtype=np.float32)
+                R = np.full(e1 - e0, np.nan, dtype=np.float64)
+                R_amplitude = np.full(e1 - e0, np.nan, dtype=np.float64)
+                beta = np.full(e1 - e0, np.nan, dtype=np.float64)
+                C = np.full(e1 - e0, np.nan, dtype=np.float64)
                 npts = np.zeros(e1 - e0, dtype=np.int16)
                 r2 = np.full(e1 - e0, np.nan, dtype=np.float32)
+                tmax_days = np.full(e1 - e0, np.nan, dtype=np.float32)
 
                 valid = counts > 1
                 if np.any(valid):
-                    capped = np.minimum(counts, max_event_len).astype(np.int32)
+                    capped = (
+                        np.minimum(counts, max_event_len).astype(np.int32)
+                        if max_event_len > 0
+                        else counts.astype(np.int32)
+                    )
                     ob0 = int(starts[valid].min())
                     ob1 = int((starts[valid] + capped[valid]).max())
                     vbuf = v_vcum[ob0:ob1].astype(np.float64)
@@ -242,21 +314,38 @@ def process_file(
                         n = int(capped[i])
                         rel = int(starts[i] - ob0)
                         vcum = vbuf[rel:rel + n]
+                        if fixed_t_steps is None:
+                            t_steps = np.arange(1, n + 1, dtype=np.int32)
+                            event_t_hours = t_steps.astype(np.float64) * dt_hours
+                        else:
+                            keep = fixed_t_steps <= n
+                            t_steps = fixed_t_steps[keep]
+                            event_t_hours = t_hours[keep]
                         w = event_window_maxima(vcum, t_steps)
-                        Ri, Ci, ni, r2i = fit_rc(w, t_hours)
-                        R[i] = np.float32(Ri)
-                        C[i] = np.float32(Ci)
+                        event_t_days = event_t_hours / 24.0
+                        Ri, betai, Ci, ni, r2i = fit_rc(w, event_t_days)
+                        R[i] = Ri
+                        R_amplitude[i] = np.exp(Ri) if np.isfinite(Ri) else np.nan
+                        beta[i] = betai
+                        C[i] = Ci
                         npts[i] = np.int16(ni)
                         r2[i] = np.float32(r2i)
+                        if ni:
+                            tmax_days[i] = np.float32(np.nanmax(event_t_days[np.isfinite(w)]))
 
                 fout.variables["event_id"][sl] = event_id
                 fout.variables["year"][sl] = year
                 fout.variables["lat"][sl] = lat
                 fout.variables["lon"][sl] = lon
                 fout.variables["R"][sl] = R
+                fout.variables["R_amplitude"][sl] = R_amplitude
+                fout.variables["beta"][sl] = beta
                 fout.variables["C"][sl] = C
+                fout.variables["FAI"][sl] = R / np.log(10.0)
+                fout.variables["FCI"][sl] = C
                 fout.variables["n_pts"][sl] = npts
                 fout.variables["r2"][sl] = r2
+                fout.variables["Tmax_days"][sl] = tmax_days
                 fout.sync()
 
             fout.complete = "true"
@@ -274,9 +363,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--in-dir", type=Path, required=True, help="Folder containing flood_events__*.nc files.")
     parser.add_argument("--out-dir", type=Path, required=True, help="Folder for scaling_RC__*.nc outputs.")
-    parser.add_argument("--t-hours", default=DEFAULT_T_HOURS, help="Comma-separated T values in hours.")
+    parser.add_argument(
+        "--t-hours",
+        help="Optional comma-separated T values in hours, each an integer multiple of the sampling interval, for a fixed-window sensitivity; omitted uses the full event domain.",
+    )
     parser.add_argument("--event-batch", type=int, default=10_000, help="Events per CPU batch.")
-    parser.add_argument("--max-event-len", type=int, default=512, help="Maximum observations per event to use.")
+    parser.add_argument("--max-event-len", type=int, default=0, help="Optional event-length cap; 0 uses the complete event.")
     parser.add_argument("--compression", type=int, default=2, help="NetCDF compression level; 0 disables compression.")
     parser.add_argument("--flat", action="store_true", help="Do not preserve input subfolder structure.")
     parser.add_argument("--overwrite", action="store_true", help="Overwrite existing outputs.")
@@ -286,7 +378,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> None:
     args = build_parser().parse_args(argv)
-    t_hours = parse_t_hours(args.t_hours)
+    t_hours = parse_t_hours(args.t_hours) if args.t_hours else None
     files = iter_input_files(args.in_dir)
     if not files:
         raise FileNotFoundError(f"No flood_events__*.nc files found under {args.in_dir}")

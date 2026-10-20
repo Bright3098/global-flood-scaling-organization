@@ -1,0 +1,123 @@
+{
+  "source_version": "Final single-peak HBV experiment of 2026-10-14, matching Article_1015 Extended Data Fig. 5",
+  "comparison_tolerance": 1e-10,
+  "reference_source_sha256": {
+    "hbv_sensitivity.py": "c49ef3217fba6825da9d6a3c0e2c511aa9b825b0b57a90a81617a022ea559625",
+    "fit_indices.py": "e163d885d7115dad29cc67d672b5f6de65c760148df0ba876ebe03df37e1f4d7",
+    "plot_hbv.py": "4b5e4289d64b611a8940f63b338982ed9dbca8745578b2b9a5042fd562de68ee"
+  },
+  "scenarios": {
+    "rain60": {
+      "FAI": 0.3927052919637976,
+      "FCI": 0.43277500147028236,
+      "R_squared": 0.9507813721406313,
+      "peak_Q_mm_day": 1.8581227208703952,
+      "peak_time_from_first_rainfall_days": 5.5,
+      "runoff_volume_mm": 21.858631538529288
+    },
+    "baseline_a": {
+      "FAI": 1.1238907313816693,
+      "FCI": 0.5435455253662859,
+      "R_squared": 0.8648588799873316,
+      "peak_Q_mm_day": 9.060417133956133,
+      "peak_time_from_first_rainfall_days": 5.5,
+      "runoff_volume_mm": 56.49517451884203
+    },
+    "rain180": {
+      "FAI": 1.426447535738387,
+      "FCI": 0.5438257102805494,
+      "R_squared": 0.8490821610995886,
+      "peak_Q_mm_day": 17.834554382952593,
+      "peak_time_from_first_rainfall_days": 5.5,
+      "runoff_volume_mm": 100.88887354481302
+    },
+    "duration3": {
+      "FAI": 1.2359902698542171,
+      "FCI": 0.6248582386484091,
+      "R_squared": 0.8339457779570592,
+      "peak_Q_mm_day": 11.832787033355876,
+      "peak_time_from_first_rainfall_days": 3.5,
+      "runoff_volume_mm": 56.49517569578993
+    },
+    "duration12": {
+      "FAI": 0.913231306582054,
+      "FCI": 0.3995671774802113,
+      "R_squared": 0.9177057722321521,
+      "peak_Q_mm_day": 5.774221485017311,
+      "peak_time_from_first_rainfall_days": 9.5,
+      "runoff_volume_mm": 56.495171960233634
+    },
+    "soil20": {
+      "FAI": 0.6407660044736424,
+      "FCI": 0.5116731470704599,
+      "R_squared": 0.9174698435908888,
+      "peak_Q_mm_day": 3.0973990476031115,
+      "peak_time_from_first_rainfall_days": 6.5,
+      "runoff_volume_mm": 26.88766360751373
+    },
+    "soil50": {
+      "FAI": 1.1238907313816693,
+      "FCI": 0.5435455253662859,
+      "R_squared": 0.8648588799873316,
+      "peak_Q_mm_day": 9.060417133956133,
+      "peak_time_from_first_rainfall_days": 5.5,
+      "runoff_volume_mm": 56.49517451884203
+    },
+    "soil80": {
+      "FAI": 1.367013580268737,
+      "FCI": 0.5268348636272048,
+      "R_squared": 0.8531078049873806,
+      "peak_Q_mm_day": 15.343856676117117,
+      "peak_time_from_first_rainfall_days": 5.5,
+      "runoff_volume_mm": 92.95291815853136
+    },
+    "routing1": {
+      "FAI": 1.1587775264166023,
+      "FCI": 0.5723146538383452,
+      "R_squared": 0.8476882180591011,
+      "peak_Q_mm_day": 9.661583719903636,
+      "peak_time_from_first_rainfall_days": 4.5,
+      "runoff_volume_mm": 56.49517451884202
+    },
+    "routing3": {
+      "FAI": 1.1238907313816693,
+      "FCI": 0.5435455253662859,
+      "R_squared": 0.8648588799873316,
+      "peak_Q_mm_day": 9.060417133956133,
+      "peak_time_from_first_rainfall_days": 5.5,
+      "runoff_volume_mm": 56.49517451884203
+    },
+    "routing7": {
+      "FAI": 1.011477952754421,
+      "FCI": 0.4515251102854918,
+      "R_squared": 0.9004515772386775,
+      "peak_Q_mm_day": 7.15450718769186,
+      "peak_time_from_first_rainfall_days": 7.5,
+      "runoff_volume_mm": 56.49517451884201
+    },
+    "lag0": {
+      "FAI": 1.1238907313816693,
+      "FCI": 0.5435455253662859,
+      "R_squared": 0.8648588799873316,
+      "peak_Q_mm_day": 9.060417133956133,
+      "peak_time_from_first_rainfall_days": 5.5,
+      "runoff_volume_mm": 56.49517451884203
+    },
+    "lag2": {
+      "FAI": 1.0488184871334492,
+      "FCI": 0.48111563387331646,
+      "R_squared": 0.889273004525217,
+      "peak_Q_mm_day": 7.736347363843993,
+      "peak_time_from_first_rainfall_days": 6.5,
+      "runoff_volume_mm": 56.49517435721442
+    },
+    "lag3": {
+      "FAI": 0.9550280020680825,
+      "FCI": 0.40283416218015833,
+      "R_squared": 0.9095012876958741,
+      "peak_Q_mm_day": 6.332399041975716,
+      "peak_time_from_first_rainfall_days": 7.5,
+      "runoff_volume_mm": 56.49517427391839
+    }
+  }
+}

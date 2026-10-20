@@ -1,0 +1,2 @@
+input,area_col,trend_col,group_col,group_value,n_stations,threshold_log10_area,threshold_area_km2,n_small,n_large,p_small_increase,p_large_increase,delta_large_minus_small,J_separation,is_best_threshold
+examples/case_data/04_otsu_like_method/station_area_trend_case.csv,area,Slope_Trend_MK,,,120,3.2132832142667525,1634.1172491291602,48,72,0.5416666666666666,0.7777777777777778,0.23611111111111116,0.05574845679012348,True

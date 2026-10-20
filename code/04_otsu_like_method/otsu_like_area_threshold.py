@@ -31,6 +31,8 @@ AREA_CANDIDATES = (
     "basin_area",
 )
 TREND_CANDIDATES = (
+    "C_direction",
+    "R_log_direction",
     "trend_direction",
     "Slope_Trend_MK",
     "Intercept_Trend_MK",
@@ -185,6 +187,62 @@ def bootstrap_thresholds(
     return pd.DataFrame(rows)
 
 
+def permutation_null(
+    frame: pd.DataFrame,
+    observed_scan: pd.DataFrame,
+    *,
+    n_perm: int,
+    seed: int,
+    min_side_n: int,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Build a label-permutation envelope and a max-J familywise null."""
+    ordered = frame.sort_values("log10_area").reset_index(drop=True)
+    areas = ordered["log10_area"].to_numpy(dtype=float)
+    labels = ordered["is_increase"].to_numpy(dtype=float)
+    thresholds = observed_scan["threshold_log10_area"].to_numpy(dtype=float)
+    split_sizes = np.searchsorted(areas, thresholds, side="right")
+    valid = (split_sizes >= min_side_n) & ((len(areas) - split_sizes) >= min_side_n)
+    thresholds = thresholds[valid]
+    split_sizes = split_sizes[valid]
+
+    rng = np.random.default_rng(seed)
+    all_j = np.empty((n_perm, len(split_sizes)), dtype=np.float32)
+    for start in range(0, n_perm, 200):
+        stop = min(start + 200, n_perm)
+        permuted = np.vstack([rng.permutation(labels) for _ in range(stop - start)])
+        cumulative = np.cumsum(permuted, axis=1)
+        small_sum = cumulative[:, split_sizes - 1]
+        total = cumulative[:, -1][:, None]
+        p_small = small_sum / split_sizes
+        p_large = (total - small_sum) / (len(areas) - split_sizes)
+        all_j[start:stop] = (p_small - p_large) ** 2
+
+    maximum_j = all_j.max(axis=1)
+    observed_maximum = float(observed_scan["J_separation"].max())
+    permutation_p = (1.0 + float(np.sum(maximum_j >= observed_maximum))) / (n_perm + 1.0)
+    envelope = pd.DataFrame(
+        {
+            "threshold_log10_area": thresholds,
+            "null_J_median": np.quantile(all_j, 0.50, axis=0),
+            "null_J_q95": np.quantile(all_j, 0.95, axis=0),
+            "null_J_q99": np.quantile(all_j, 0.99, axis=0),
+        }
+    )
+    summary = pd.DataFrame(
+        [
+            {
+                "permutations": n_perm,
+                "observed_max_J": observed_maximum,
+                "null_max_J_median": float(np.median(maximum_j)),
+                "null_max_J_q95": float(np.quantile(maximum_j, 0.95)),
+                "null_max_J_q99": float(np.quantile(maximum_j, 0.99)),
+                "permutation_p": permutation_p,
+            }
+        ]
+    )
+    return envelope, summary
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, required=True, help="Input CSV/XLSX station table.")
@@ -201,6 +259,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--min-side-n", type=int, default=25)
     parser.add_argument("--bootstrap", type=int, default=0, help="Optional bootstrap repetitions.")
     parser.add_argument("--sample-fraction", type=float, default=0.90)
+    parser.add_argument("--permutations", type=int, default=10_000, help="Label permutations for the max-J null; 0 disables.")
     parser.add_argument("--seed", type=int, default=3098)
     return parser
 
@@ -252,6 +311,17 @@ def main() -> None:
     prepared.to_csv(args.out_dir / "otsu_like_prepared_input.csv", index=False)
     scan.to_csv(args.out_dir / "otsu_like_threshold_scan.csv", index=False)
     summary.to_csv(args.out_dir / "otsu_like_threshold_summary.csv", index=False)
+
+    if args.permutations > 0:
+        envelope, null_summary = permutation_null(
+            prepared,
+            scan,
+            n_perm=args.permutations,
+            seed=args.seed,
+            min_side_n=args.min_side_n,
+        )
+        envelope.to_csv(args.out_dir / "otsu_like_permutation_envelope.csv", index=False)
+        null_summary.to_csv(args.out_dir / "otsu_like_permutation_summary.csv", index=False)
 
     if args.bootstrap > 0:
         boot = bootstrap_thresholds(

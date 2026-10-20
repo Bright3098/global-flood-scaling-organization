@@ -1,0 +1,74 @@
+{
+  "reference": "Final single-peak HBV source data from 2026-10-14",
+  "rows_compared": 10250,
+  "scenario_count": 14,
+  "ordering_and_daily_times_identical": true,
+  "maximum_daily_discharge_difference_mm_day": 1.3234889800848443e-23,
+  "maximum_daily_rainfall_difference_mm_day": 0.0,
+  "old_hydrographs_sha256": "1fed056b45afd1bcd474d017d818c483f6d64b7b568949196c82ab27760a0a6e",
+  "new_hydrographs_sha256": "326f787d8739795ca8b3de26c9d91937243d56fa18908d78f98d3c690bca9700",
+  "numerical_checks_passed": true,
+  "physics_or_parameters_changed": false,
+  "allowed_packaging_changes": [
+    "Output paths relative to module location or user-supplied --output-dir",
+    "Built-in Helvetica replaces system-specific Arial in figure drawing only",
+    "Figure filename updated from old number 8 to current Extended Data Figure 5",
+    "Portable runner, pinned tested plotting requirements and run reports added",
+    "Generated short README points to the portable entry point"
+  ],
+  "ast_function_comparison": {
+    "hbv_sensitivity.py": {
+      "changed_functions": [
+        "main"
+      ],
+      "unchanged_functions": [
+        "csv_write",
+        "hbv",
+        "scenarios",
+        "soil_rainfall_update",
+        "triangle_weights"
+      ]
+    },
+    "fit_indices.py": {
+      "changed_functions": [],
+      "unchanged_functions": [
+        "main",
+        "write_csv"
+      ]
+    },
+    "plot_hbv.py": {
+      "changed_functions": [
+        "render"
+      ],
+      "unchanged_functions": [
+        "attach_indices",
+        "coefficients",
+        "interpolate",
+        "interpolation_audit",
+        "load_data",
+        "main",
+        "pchip_tangents",
+        "style_curves",
+        "y_axis"
+      ]
+    }
+  },
+  "full_figure_run": {
+    "python_version": "3.12.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "total_seconds": 1.9479043000028469,
+    "maximum_reference_errors": {
+      "FAI": 0.0,
+      "FCI": 0.0,
+      "R_squared": 0.0,
+      "peak_Q_mm_day": 0.0,
+      "peak_time_from_first_rainfall_days": 0.0,
+      "runoff_volume_mm": 0.0
+    },
+    "hydrographs_identical_sha256": true,
+    "figure_preview_visually_checked": true,
+    "figure_layout_passed": true,
+    "built_in_font": "Helvetica",
+    "output_directory": "expected_outputs"
+  }
+}

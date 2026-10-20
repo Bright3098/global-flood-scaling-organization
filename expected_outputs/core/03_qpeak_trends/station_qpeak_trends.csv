@@ -1,0 +1,2 @@
+slope_pct_per_year,slope_pct_per_decade,slope_low_pct_per_decade,slope_high_pct_per_decade,kendall_tau,kendall_p,station_id,n_years,trend_direction,trend_significant
+-0.07518614206474855,-0.7518614206474855,-17.7554923972794,17.186802048128193,-0.006349206349206349,0.9565498931849237,Barcoo River at Blackall 003303A,36,decrease,False

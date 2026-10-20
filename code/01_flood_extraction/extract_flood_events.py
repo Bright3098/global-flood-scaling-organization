@@ -15,6 +15,7 @@ Outputs:
 from __future__ import annotations
 
 import argparse
+import calendar
 import re
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
@@ -79,7 +80,11 @@ def read_daily_ts_csv(path: Path) -> pd.DataFrame:
         }
     ).dropna(subset=["time"])
     out["station_name"] = derive_station_name_from_filename(path)
-    return out.sort_values("time").reset_index(drop=True)
+    return (
+        out.sort_values("time")
+        .drop_duplicates(subset=["time"], keep="last")
+        .reset_index(drop=True)
+    )
 
 
 def looks_like_daily_ts(path: Path) -> bool:
@@ -104,7 +109,10 @@ def extract_flood_events_timeseries(
     df: pd.DataFrame,
     *,
     tol: float = 0.05,
-    min_valid_ratio: float = 0.5,
+    min_valid_days: int = 300,
+    min_valid_ratio: float | None = None,
+    year_start: int = 1980,
+    year_end: int = 2020,
 ) -> list[dict]:
     """Extract annual flood events from one station time series."""
     required = {"time", "runoff", "station_name"}
@@ -114,13 +122,17 @@ def extract_flood_events_timeseries(
 
     frame = df.copy()
     frame["year"] = frame["time"].dt.year
+    frame = frame[frame["year"].between(year_start, year_end)].copy()
     events: list[dict] = []
     event_counter = 1
 
     for year, group_raw in frame.groupby("year", sort=True):
-        n_total = len(group_raw)
         n_valid = int(group_raw["runoff"].notna().sum())
-        if n_total == 0 or n_valid / n_total < min_valid_ratio:
+        expected_days = 366 if calendar.isleap(int(year)) else 365
+        valid_fraction = n_valid / expected_days
+        if n_valid < min_valid_days:
+            continue
+        if min_valid_ratio is not None and valid_fraction < min_valid_ratio:
             continue
 
         group = (
@@ -145,6 +157,9 @@ def extract_flood_events_timeseries(
         process.loc[process.index[0], "flag"] = "rising"
         process.loc[process.index[-1], "flag"] = "recession"
         process.loc[process.index[peak_pos - left], "flag"] = "peak"
+        event_calendar_days = int(
+            (group.loc[right, "time"] - group.loc[left, "time"]).days + 1
+        )
 
         events.append(
             {
@@ -157,8 +172,13 @@ def extract_flood_events_timeseries(
                 "peak_value": float(group.loc[peak_pos, "runoff"]),
                 "recession_time": group.loc[right, "time"],
                 "recession_value": float(group.loc[right, "runoff"]),
-                "duration_days": int((group.loc[right, "time"] - group.loc[left, "time"]).days),
+                "duration_days": event_calendar_days - 1,
+                "event_calendar_days": event_calendar_days,
                 "n_points": int(len(process)),
+                "unobserved_days_inside_event": int(event_calendar_days - len(process)),
+                "valid_days": n_valid,
+                "expected_days": expected_days,
+                "valid_fraction": valid_fraction,
                 "data": process,
             }
         )
@@ -171,10 +191,25 @@ def safe_name(text: str) -> str:
     return re.sub(r"[^A-Za-z0-9_.-]+", "_", text).strip("_") or "station"
 
 
-def process_one_file(path: Path, out_dir: Path, tol: float, min_valid_ratio: float) -> tuple[pd.DataFrame | None, pd.DataFrame | None, dict]:
+def process_one_file(
+    path: Path,
+    out_dir: Path,
+    tol: float,
+    min_valid_days: int,
+    min_valid_ratio: float | None,
+    year_start: int,
+    year_end: int,
+) -> tuple[pd.DataFrame | None, pd.DataFrame | None, dict]:
     try:
         df = read_daily_ts_csv(path)
-        events = extract_flood_events_timeseries(df, tol=tol, min_valid_ratio=min_valid_ratio)
+        events = extract_flood_events_timeseries(
+            df,
+            tol=tol,
+            min_valid_days=min_valid_days,
+            min_valid_ratio=min_valid_ratio,
+            year_start=year_start,
+            year_end=year_end,
+        )
         if not events:
             return None, None, {"file": str(path), "status": "no_events"}
 
@@ -205,7 +240,10 @@ def run_batch(
     out_dir: Path,
     *,
     tol: float,
-    min_valid_ratio: float,
+    min_valid_days: int,
+    min_valid_ratio: float | None,
+    year_start: int,
+    year_end: int,
     workers: int,
     include_all_csv: bool,
 ) -> None:
@@ -223,7 +261,15 @@ def run_batch(
 
     if workers <= 1:
         for path in candidates:
-            summary, ts, log = process_one_file(path, out_dir, tol, min_valid_ratio)
+            summary, ts, log = process_one_file(
+                path,
+                out_dir,
+                tol,
+                min_valid_days,
+                min_valid_ratio,
+                year_start,
+                year_end,
+            )
             logs.append(log)
             if summary is not None:
                 summaries.append(summary)
@@ -232,7 +278,16 @@ def run_batch(
     else:
         with ProcessPoolExecutor(max_workers=workers) as pool:
             futures = {
-                pool.submit(process_one_file, path, out_dir, tol, min_valid_ratio): path
+                pool.submit(
+                    process_one_file,
+                    path,
+                    out_dir,
+                    tol,
+                    min_valid_days,
+                    min_valid_ratio,
+                    year_start,
+                    year_end,
+                ): path
                 for path in candidates
             }
             for future in as_completed(futures):
@@ -261,7 +316,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--input-root", type=Path, required=True, help="Folder containing daily streamflow CSV files.")
     parser.add_argument("--out-dir", type=Path, required=True, help="Output folder for event CSV files.")
     parser.add_argument("--tol", type=float, default=0.05, help="Recession tolerance relative to rising flow.")
-    parser.add_argument("--min-valid-ratio", type=float, default=0.5, help="Minimum valid runoff fraction per station-year.")
+    parser.add_argument("--min-valid-days", type=int, default=300, help="Minimum valid daily observations per station-year.")
+    parser.add_argument("--min-valid-ratio", type=float, help="Optional additional fraction of calendar days required.")
+    parser.add_argument("--year-start", type=int, default=1980)
+    parser.add_argument("--year-end", type=int, default=2020)
     parser.add_argument("--workers", type=int, default=1, help="Parallel worker count.")
     parser.add_argument("--include-all-csv", action="store_true", help="Process every CSV, not only names containing daily and ts.")
     return parser
@@ -273,7 +331,10 @@ def main() -> None:
         args.input_root,
         args.out_dir,
         tol=args.tol,
+        min_valid_days=args.min_valid_days,
         min_valid_ratio=args.min_valid_ratio,
+        year_start=args.year_start,
+        year_end=args.year_end,
         workers=args.workers,
         include_all_csv=args.include_all_csv,
     )

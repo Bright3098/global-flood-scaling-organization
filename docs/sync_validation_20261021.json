@@ -1,0 +1,112 @@
+{
+  "verification_date": "2026-10-21",
+  "status": "PASS",
+  "core_environment": {
+    "python": "3.13.5",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "numpy": "2.1.3",
+      "pandas": "2.2.3",
+      "scipy": "1.15.3",
+      "netCDF4": "1.7.2",
+      "openpyxl": "3.1.5"
+    }
+  },
+  "commands": [
+    {
+      "name": "core_tests",
+      "command": [
+        "python",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "code/tests",
+        "-p",
+        "test_*.py",
+        "-v"
+      ],
+      "seconds": 1.3456056999857537,
+      "returncode": 0
+    },
+    {
+      "name": "four_core_demos",
+      "command": [
+        "python",
+        "examples/example_four_methods.py",
+        "--execute"
+      ],
+      "seconds": 5.220535599975847,
+      "returncode": 0
+    },
+    {
+      "name": "hbv_full_workflow",
+      "command": [
+        "python",
+        "code/05_hbv_sensitivity/run_all.py",
+        "--output-dir",
+        "<validation-output>/hbv"
+      ],
+      "seconds": 2.0910008999635465,
+      "returncode": 0
+    }
+  ],
+  "core_unit_and_end_to_end_tests": 9,
+  "core_demo_commands": 4,
+  "core_reference_comparison": {
+    "status": "PASS",
+    "event_count": 4,
+    "all_netcdf_variables_match": true,
+    "csv_files_checked": [
+      "01_flood_events_csv/ALL_flood_events_summary.csv",
+      "01_flood_events_csv/ALL_flood_events_timeseries.csv",
+      "01_flood_events_csv/batch_log.csv",
+      "01_flood_events_csv/mogami_302111282214010/flood_events_summary.csv",
+      "01_flood_events_csv/mogami_302111282214010/flood_events_timeseries.csv",
+      "03_qpeak_trends/annual_qpeak_index.csv",
+      "03_qpeak_trends/qpeak_trend_summary.csv",
+      "03_qpeak_trends/station_qpeak_trends.csv",
+      "03_qpeak_trends/station_year_qpeak_normalized.csv",
+      "04_otsu_like_threshold/otsu_like_permutation_envelope.csv",
+      "04_otsu_like_threshold/otsu_like_permutation_summary.csv",
+      "04_otsu_like_threshold/otsu_like_prepared_input.csv",
+      "04_otsu_like_threshold/otsu_like_threshold_scan.csv",
+      "04_otsu_like_threshold/otsu_like_threshold_summary.csv"
+    ],
+    "excluded_from_comparison": "Runtime file paths; NetCDF global metadata.",
+    "tolerance": {
+      "absolute": 1e-12,
+      "relative": 1e-12
+    }
+  },
+  "hbv_environment": {
+    "python": "3.12.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "numpy": "2.3.5",
+      "reportlab": "4.4.9",
+      "pypdfium2": "5.14.0",
+      "Pillow": "12.3.0"
+    }
+  },
+  "hbv_validation": {
+    "status": "PASS",
+    "scenario_count": 14,
+    "figures_generated": true,
+    "maximum_reference_errors": {
+      "FAI": 0.0,
+      "FCI": 0.0,
+      "R_squared": 0.0,
+      "peak_Q_mm_day": 0.0,
+      "peak_time_from_first_rainfall_days": 0.0,
+      "runoff_volume_mm": 0.0
+    },
+    "source_hashes_match_checked_reference": true,
+    "all_panel_d_hydrographs_single_peaked": true
+  },
+  "limitations": [
+    "Local Windows verification; fresh installation and other operating systems were not tested.",
+    "Core examples use small committed subsets and do not reproduce the full global analysis."
+  ]
+}

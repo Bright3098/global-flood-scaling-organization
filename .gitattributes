@@ -1,0 +1,15 @@
+# Keep portable source files stable across operating systems.
+.gitattributes text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.txt text eol=lf
+*.svg text eol=lf
+
+# Preserve exact reference-data bytes and their recorded hashes.
+*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+code/05_hbv_sensitivity/reference_values.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+*.nc binary
+*.png binary
+*.pdf binary
